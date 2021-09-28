@@ -23,9 +23,10 @@ struct SettingView: View {
                     //PickerViewで設定した歩数を表示する
                     Text("\(stepsValue)歩")
                 }
+                .navigationBarTitle("設定")
+                .navigationBarTitleDisplayMode(.inline)
             }//Form
-            .navigationBarTitle("設定")
-            .navigationBarTitleDisplayMode(.inline)
+          
         }//NavigationView
     }//body
 }//SettingView

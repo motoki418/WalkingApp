@@ -7,11 +7,13 @@
 
 import SwiftUI
 import HealthKit
+
 struct HomeView: View {
     //選択した日付を保持する状態変数
     @State private var selectionDate = Date()
-    //選択されている歩数を保持するための状態変数（初期値は2000）
+    //歩数設定画面で選択された歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") var stepsValue = 2000
+    
     var body: some View {
         //alignmentを.topに設定したZStack、NavigationViewとDatePickerを配置することで、最前面の上部であるナビゲーションバーの中央にDatePickerを表示する
         ZStack(alignment: .top){
