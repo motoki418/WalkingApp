@@ -9,23 +9,30 @@ import SwiftUI
 import HealthKit
 
 struct ReportView: View {
-    //Pickerで表示するテキストを配列で保持する変数
-    private let date = ["週間","月間","年間"]
-    //Pickerの値が変更できるように状態変数で宣言
-    @State private var selection = 0
+    
+    //Pickerで選択されているテキストを保持するための状態変数（初期値は2000）
+    //Picker(selection: $selectionWeekと連動している
+    @AppStorage("selection_Week") private var selectionWeek = "週間"
     
     var body: some View {
         ZStack(alignment: .top){
             NavigationView{
                 VStack{
-                    Text("Hello World")
+                    Text("\(selectionWeek)")
                 }
-                .navigationBarTitleDisplayMode(.inline)
             }//NavigationView
-            Picker(selection: $selection, label: Text("")){
-                ForEach(0 ..< date.count){ num in
-                    Text(date[num])
-                }
+            //tagと@AppStorage("selection_Week") var  selectionWeek= "週間"は連動している
+            //.tagの値がselection:$selectionWeekにセットされて ,@AppStorage("selection_Week") var selectionWeek = "週間"にデータを渡す。
+            //双方向のデータ連動ができる。
+            //選択されたテキストを表示する Text("\(selectionWeek)")の中身を変更する
+            Picker(selection: $selectionWeek, label: Text("選択")){
+                Text("週間")
+                    .tag("週間")
+                Text("月間")
+                    .tag("月間")
+                Text("年間")
+                    .tag("年間")
+               
             }
             .pickerStyle(SegmentedPickerStyle())
             .frame(width:200)
