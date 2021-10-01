@@ -7,7 +7,7 @@
 
 import SwiftUI
 import HealthKit
-import CoreData
+import SwiftUICharts
 
 struct HomeView: View {
     init() {
@@ -37,46 +37,46 @@ struct HomeView: View {
     //歩数設定画面で選択された歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") var targetNumOfSteps: Int = 2000
     
-    //
+    //歩数を格納する状態変数
     @State var steps: Int = 0
     
     var body: some View {
         
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
-        //alignmentを.topに設定したZStack、NavigationViewとDatePickerを配置することで、最前面の上部であるナビゲーションバーの中央にDatePickerを表示する
-        return ZStack(alignment: .top){
-            NavigationView{
+        
+           return   NavigationView{
                 //目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
                 VStack(spacing:30){
                     Text("目標歩数は\(targetNumOfSteps)歩")
                     Text("今日の歩数は\(steps)歩")
                     Text("目標歩数まで\(targetNumOfSteps - steps)歩！")
                     Text("現在の達成率は\(formatter.string(from:NSNumber(value:(Double(steps) / Double(targetNumOfSteps))))!)")
-                    
                 }
                 .font(.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(content: {
-                    ToolbarItem(placement: .navigation){
+                    ToolbarItem(placement: .navigationBarLeading){
                         Button{
                             print("tap")
                         }label:{
-                            DatePicker("今日", selection: $selectionDate,displayedComponents:.date)
+                         Text("今日")
+                        }
+                    }
+                    ToolbarItem(placement: .principal){
+                        Button{
+                            print("tap")
+                        }label:{
+                            //日付を選択するDatePickerを作成
+                            //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
+                            //displayedComponents:[.date]で日付のみを選択・表示する
+                            DatePicker("", selection: $selectionDate,displayedComponents:.date)
                             //ja_JP（日本語＋日本地域）
                                 .environment(\.locale, Locale(identifier: "ja_JP"))
-                            //ラベルを非表示にする
-                                .labelsHidden()
                         }
                     }
                 })//.toolbar
             }//NavigationView
-                //日付を選択するDatePickerを作成
-                //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
-                //displayedComponents:[.date]で日付のみを選択・表示する
-               
-
-        }//ZStack
         .onAppear{
             //HealthKitが自分の現在のデバイスで利用可能かを確認する
             //HKHealthStore.isHealthDataAvailable() → HealthKitが利用できるかのメソッド
@@ -99,18 +99,15 @@ struct HomeView: View {
     }//body
     // 2021/9/19の00:00:00から2021/9/26日の00:00:00までの各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
-        //カレンダーを取得
-        let calender = Calendar.current
-        //取得するデータの開始日を指定
-        let startDate = DateComponents(year: 2021, month: 9, day: 23, hour: 0, minute: 0, second: 0)
-        //取得するデータの終了日を指定
-        let endDate = DateComponents(year:2021, month: 9,day: 29, hour: 23, minute: 59, second: 59)
+        //統計の開始日とサンプルの分類方法を表す　アンカーが必要なので月曜日の深夜12時を指定
         let anchorDate = Date.mondayAt12AM()
-        //取得するデータの開始(19日)と終わり(26日)を入れる
-        let predicate = HKQuery.predicateForSamples(
-            withStart: Calendar.current.date(from: startDate),
-            end: Calendar.current.date(from: endDate)
-        )
+        // 今日の日付を取得
+        let endDate = Date()
+        //取得するデータの開始日を指定
+        let startDate = Calendar.current.date(byAdding: .day, value: -7, to: endDate)
+        //let startDate = DateComponents(year: 2021, month: 9, day: 23, hour: 0, minute: 0, second: 0)
+        //取得するデータの開始(23日)と終わり(今日)を入れる
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
         //クエリを作る
         //HKObject(HealthKitで扱えるデータオブジェクト)をHelthStoreから問い合わせるためのクエリの１つ
         //HealthKitとのデータのやり取りはこのHKObjectを介して行う
@@ -126,19 +123,20 @@ struct HomeView: View {
                                                 options: .cumulativeSum,
                                                 //anchorDate:とintervalComponents:を組み合わせる事によって、特定の日付から決められた間隔の集計をすることができる
                                                 anchorDate: anchorDate,
+                                                //取得するデータの間隔を指定
                                                 //１日(毎日)ずつの間隔でデータを取得する
                                                 intervalComponents: DateComponents(day:1))
         // クエリの実行結果のコールバックハンドラー
         //クロージャには取得の成否がコールバックされる
         query.initialResultsHandler = { query, statisticsCollection, error in
             statisticsCollection?.enumerateStatistics(
-                from: calender.date(from: startDate)!,
-                to: calender.date(from: endDate)!
+                from: startDate!,
+                to: endDate
             ){ statistics, stop in
                 //返された各日の歩数の合計を出力
                 print( statistics.sumQuantity() ?? "nil")
                 //HKQuantity型をInt型に変換
-                self.steps = Int(((statistics.sumQuantity() as AnyObject).doubleValue(for: HKUnit.count())))
+                self.steps = Int((statistics.sumQuantity() as AnyObject).doubleValue(for: HKUnit.count()))
             }
         }
         //クエリの開始
@@ -146,22 +144,6 @@ struct HomeView: View {
         self.healthStore.execute(query)
         print("query = \(query)")
     }//getDailyStepCount()
-    
-    //        //一週間の合計歩数を取得するメソッド
-    //        //19日の00:00:00から26日の00:00:00までの合計なので19~25の合計歩数
-    //       private func getWeekStepCount(){
-    //            let type = HKObjectType.quantityType(forIdentifier: .stepCount)!
-    //
-    //            let startDate = DateComponents(year: 2021, month: 9, day: 20)
-    //            let endDate = DateComponents(year:2021, month: 9,day: 26)
-    //            let predicate = HKQuery.predicateForSamples(withStart: Calendar.current.date(from: startDate)!, end: Calendar.current.date(from: endDate)!)
-    //
-    //            let query = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: predicate, options: [.cumulativeSum]){ query, statistics, error in
-    //                print(statistics!.sumQuantity()!)
-    //            }
-    //            healthStore.execute(query)
-    //        }//getWeekStepCount()
- 
 }//HomeView
 
 struct HomeView_Previews: PreviewProvider {

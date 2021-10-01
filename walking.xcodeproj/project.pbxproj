@@ -147,6 +147,8 @@
 			dependencies = (
 			);
 			name = walking;
+			packageProductDependencies = (
+			);
 			productName = walking;
 			productReference = 363CB90226F7560100DE3865 /* walking.app */;
 			productType = "com.apple.product-type.application";
@@ -175,6 +177,8 @@
 				ja,
 			);
 			mainGroup = 363CB8F926F7560100DE3865;
+			packageReferences = (
+			);
 			productRefGroup = 363CB90326F7560100DE3865 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
