@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import SwiftUICharts
 
 struct SettingView: View {
     //選択されている歩数を保持するための状態変数（初期値は2000）
-    @AppStorage("steps_Value") var stepsValue = 2000
+    @AppStorage("steps_Value") private var targetNumOfSteps: Int = 2000
     
     var body: some View {
         NavigationView{
@@ -21,12 +22,10 @@ struct SettingView: View {
                     Text("目標歩数")
                     Spacer()
                     //PickerViewで設定した歩数を表示する
-                    Text("\(stepsValue)歩")
+                    Text("\(targetNumOfSteps)歩")
                 }
-                .navigationBarTitle("設定")
-                .navigationBarTitleDisplayMode(.inline)
             }//Form
-          
+            .navigationBarTitle("設定")
         }//NavigationView
     }//body
 }//SettingView

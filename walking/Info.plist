@@ -46,9 +46,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSHealthShareUsageDescription</key>
-	<string>read health data</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>write health data</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>アプリでグラフを表示するためのデータをヘルスケアから取得します。</string>
 </dict>
 </plist>
