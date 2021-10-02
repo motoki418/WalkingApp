@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftUICharts
 
 struct SettingView: View {
     //選択されている歩数を保持するための状態変数（初期値は2000）

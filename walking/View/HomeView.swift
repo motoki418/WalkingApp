@@ -7,18 +7,8 @@
 
 import SwiftUI
 import HealthKit
-import SwiftUICharts
 
 struct HomeView: View {
-    init() {
-        //タブバーが透明になる、背景色が適用されない問題の解決方法
-        //iOS15ではUITabBarが透明になってしまうことがあるので、iOS15未満と同じ挙動にするにはiOS15+のscrollEdgeAppearanceを指定する。
-        if #available(iOS 15.0, *) {
-            let appearance = UITabBarAppearance()
-            appearance.backgroundColor = UIColor(Color.keyColor)
-            UITabBar.appearance().scrollEdgeAppearance = appearance
-        }
-    }
     //HealthKitで管理される保存領域をHealthStoreという
     //インスタンス生成
     //ヘルスケアのデバイスデータとのやりとりはほぼ全てHKHealthStore経由で行う
@@ -45,38 +35,68 @@ struct HomeView: View {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
         
-           return   NavigationView{
-                //目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
-                VStack(spacing:30){
-                    Text("目標歩数は\(targetNumOfSteps)歩")
-                    Text("今日の歩数は\(steps)歩")
-                    Text("目標歩数まで\(targetNumOfSteps - steps)歩！")
-                    Text("現在の達成率は\(formatter.string(from:NSNumber(value:(Double(steps) / Double(targetNumOfSteps))))!)")
+        return NavigationView{
+            //目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
+            VStack(spacing:30){
+                Text("目標歩数は\(targetNumOfSteps)歩")
+                Text("今日の歩数は\(steps)歩")
+                ZStack{
+                    //背景用のCircle
+                    //Circleの上にCircleを重ねて進捗を円で表示するプログレスバーを作成する
+                    Circle()
+                    //strokeは円をくり抜いて輪を作るメソッド
+                    //線の色と線の幅を指定　lineWidthは線の幅を指定 デフォルトは1
+                        .stroke(Color.keyColor, style: StrokeStyle(lineWidth:20))
+                    //円の透明度
+                        .opacity(0.2)
+                    //進捗用のCircle
+                    //進捗Circleは歩数が格納されている状態変数stepsの値を使って長さを変える
+                    Circle()
+                    //trim()を使うことで指定した範囲でトリミングをすることができる
+                    //from:トリミング開始位置 to:トリミング終了位置　0.0 〜 1.0の間で指定
+                    //引数toを歩数が格納されている状態変数stepsの値を指定することで、歩いた歩数の進捗を表示するプログレスバーが使えるはず。
+                        .trim(from: 0.0, to: CGFloat(min(Double(steps), 1.0)))
+                    //線の色と線の幅と線の先端のスタイルを指定 .roundで先端を丸めることが出来る
+                        .stroke(Color.keyColor, style: StrokeStyle(lineWidth:20, lineCap: .round))
+                    //デフォルトだと開始位置が0度で真右になっているので、-90度を指定して開始位置を上に設定
+                        .rotationEffect(.degrees(-90))
+                    VStack{
+                        Text("現在の達成率は\(formatter.string(from:NSNumber(value:(Double(steps) / Double(targetNumOfSteps))))!)")
+                        //今日歩いた歩数が目標歩数を上回ったときと上回っていない時の処理
+                        if steps < targetNumOfSteps{
+                            Text("目標歩数まで\(targetNumOfSteps - steps)歩！")
+                        }else{
+                            Text("目標達成！")
+                        }
+                    }//VStack
+                }//ZStack
+                //プログレスバーの幅と高さを指定
+                .frame(width: 300, height: 300)
+            }
+            .font(.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading){
+                    Button{
+                        print("今日")
+                    }label:{
+                        Text("今日")
+                    }
                 }
-                .font(.title)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar(content: {
-                    ToolbarItem(placement: .navigationBarLeading){
-                        Button{
-                            print("tap")
-                        }label:{
-                         Text("今日")
-                        }
+                ToolbarItem(placement: .principal){
+                    Button{
+                        print("DatePicker")
+                    }label:{
+                        //日付を選択するDatePickerを作成
+                        //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
+                        //displayedComponents:[.date]で日付のみを選択・表示する
+                        DatePicker("", selection: $selectionDate,displayedComponents:.date)
+                        //ja_JP（日本語＋日本地域）
+                            .environment(\.locale, Locale(identifier: "ja_JP"))
                     }
-                    ToolbarItem(placement: .principal){
-                        Button{
-                            print("tap")
-                        }label:{
-                            //日付を選択するDatePickerを作成
-                            //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
-                            //displayedComponents:[.date]で日付のみを選択・表示する
-                            DatePicker("", selection: $selectionDate,displayedComponents:.date)
-                            //ja_JP（日本語＋日本地域）
-                                .environment(\.locale, Locale(identifier: "ja_JP"))
-                        }
-                    }
-                })//.toolbar
-            }//NavigationView
+                }
+            })//.toolbar
+        }//NavigationView
         .onAppear{
             //HealthKitが自分の現在のデバイスで利用可能かを確認する
             //HKHealthStore.isHealthDataAvailable() → HealthKitが利用できるかのメソッド
@@ -97,6 +117,7 @@ struct HomeView: View {
             }//if HKHealthStore.isHealthDataAvailable()
         }//onAppear
     }//body
+    
     // 2021/9/19の00:00:00から2021/9/26日の00:00:00までの各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
         //統計の開始日とサンプルの分類方法を表す　アンカーが必要なので月曜日の深夜12時を指定
@@ -104,8 +125,7 @@ struct HomeView: View {
         // 今日の日付を取得
         let endDate = Date()
         //取得するデータの開始日を指定
-        let startDate = Calendar.current.date(byAdding: .day, value: -7, to: endDate)
-        //let startDate = DateComponents(year: 2021, month: 9, day: 23, hour: 0, minute: 0, second: 0)
+        let startDate = Calendar.current.date(byAdding: .day, value: -30, to: endDate)
         //取得するデータの開始(23日)と終わり(今日)を入れる
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
         //クエリを作る
