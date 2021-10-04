@@ -9,6 +9,7 @@ import SwiftUI
 import HealthKit
 
 struct HomeView: View {
+    
     //HealthKitで管理される保存領域をHealthStoreという
     //インスタンス生成
     //ヘルスケアのデバイスデータとのやりとりはほぼ全てHKHealthStore経由で行う
@@ -25,10 +26,11 @@ struct HomeView: View {
     @State private var selectionDate = Date()
     
     //歩数設定画面で選択された歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
-    @AppStorage("steps_Value") var targetNumOfSteps: Int = 2000
+    @AppStorage("steps_Value") var targetNumberOfSteps: Int = 2000
     
     //歩数を格納する状態変数
-    @State var steps: Int = 0
+    //一日の始まりは歩数データがnilになっている可能性があるのでオプショナル型で宣言
+    @State var steps: Int?
     
     var body: some View {
         
@@ -38,11 +40,11 @@ struct HomeView: View {
         return NavigationView{
             //目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
             VStack(spacing:30){
-                Text("目標歩数は\(targetNumOfSteps)歩")
-                Text("今日の歩数は\(steps)歩")
-                ZStack{
+                Text("目標歩数は\(targetNumberOfSteps)歩")
+                Text("今日の歩数は\(steps ?? 0)歩")
+                //ZStackで２つのCircleを重ねて円形のプログレスバー・進捗表示を実装する
+                ZStack(){
                     //背景用のCircle
-                    //Circleの上にCircleを重ねて進捗を円で表示するプログレスバーを作成する
                     Circle()
                     //strokeは円をくり抜いて輪を作るメソッド
                     //線の色と線の幅を指定　lineWidthは線の幅を指定 デフォルトは1
@@ -52,25 +54,33 @@ struct HomeView: View {
                     //進捗用のCircle
                     //進捗Circleは歩数が格納されている状態変数stepsの値を使って長さを変える
                     Circle()
-                    //trim()を使うことで指定した範囲でトリミングをすることができる
+                    //trim()を使うことで進捗を表示する円形のプログレスバーを作成することが出来る
                     //from:トリミング開始位置 to:トリミング終了位置　0.0 〜 1.0の間で指定
-                    //引数toを歩数が格納されている状態変数stepsの値を指定することで、歩いた歩数の進捗を表示するプログレスバーが使えるはず。
-                        .trim(from: 0.0, to: CGFloat(min(Double(steps), 1.0)))
+                    //引数toの数値を変更ことで進捗率を変更することが出来る
+                    //今回は引数toに今日歩いた歩数を目標歩数で割った達成率を設定することで、その達成率に応じて進捗を示すCircleの表示を行う
+                        .trim(from: 0.0, to: (Double(steps ?? 0) / Double(targetNumberOfSteps)))
                     //線の色と線の幅と線の先端のスタイルを指定 .roundで先端を丸めることが出来る
                         .stroke(Color.keyColor, style: StrokeStyle(lineWidth:20, lineCap: .round))
-                    //デフォルトだと開始位置が0度で真右になっているので、-90度を指定して開始位置を上に設定
+                    //アニメーションの設定
+                    //1秒かけて進捗を示すCircleを表示する
+                        .animation(.linear(duration: 1.5))
+                    //-90度を指定して円の始まりを一番上に持ってくるための処理。デフォルトだと開始位置が0度で円が右端から始まる
                         .rotationEffect(.degrees(-90))
                     VStack{
-                        Text("現在の達成率は\(formatter.string(from:NSNumber(value:(Double(steps) / Double(targetNumOfSteps))))!)")
+                        //達成率の表示
+                        Text("今日の達成率は\(formatter.string(from:NSNumber(value:(Double(steps ?? 0) / Double(targetNumberOfSteps))))!)")
                         //今日歩いた歩数が目標歩数を上回ったときと上回っていない時の処理
-                        if steps < targetNumOfSteps{
-                            Text("目標歩数まで\(targetNumOfSteps - steps)歩！")
-                        }else{
+                        //達成率が100％未満の場合
+                        if steps ?? 0 < targetNumberOfSteps{
+                            Text("目標歩数まで\(targetNumberOfSteps - Int(steps ?? 0))歩！")
+                        }
+                        //達成率が100%以上の場合
+                        else{
                             Text("目標達成！")
                         }
                     }//VStack
                 }//ZStack
-                //プログレスバーの幅と高さを指定
+                //円形のプログレスバーの幅と高さを指定
                 .frame(width: 300, height: 300)
             }
             .font(.title)
@@ -90,7 +100,7 @@ struct HomeView: View {
                         //日付を選択するDatePickerを作成
                         //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
                         //displayedComponents:[.date]で日付のみを選択・表示する
-                        DatePicker("", selection: $selectionDate,displayedComponents:.date)
+                        DatePicker("", selection: $selectionDate, displayedComponents:.date)
                         //ja_JP（日本語＋日本地域）
                             .environment(\.locale, Locale(identifier: "ja_JP"))
                     }
@@ -155,7 +165,7 @@ struct HomeView: View {
             ){ statistics, stop in
                 //返された各日の歩数の合計を出力
                 print( statistics.sumQuantity() ?? "nil")
-                //HKQuantity型をInt型に変換
+                //HKQuantity型をInt型に変換して歩数を格納する状態変数stepsに代入
                 self.steps = Int((statistics.sumQuantity() as AnyObject).doubleValue(for: HKUnit.count()))
             }
         }
