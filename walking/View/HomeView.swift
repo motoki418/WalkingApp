@@ -58,7 +58,7 @@ struct HomeView: View {
                     //from:トリミング開始位置 to:トリミング終了位置　0.0 〜 1.0の間で指定
                     //引数toの数値を変更ことで進捗率を変更することが出来る
                     //今回は引数toに今日歩いた歩数を目標歩数で割った達成率を設定することで、その達成率に応じて進捗を示すCircleの表示を行う
-                        .trim(from: 0.0, to: (Double(steps ?? 0) / Double(targetNumberOfSteps)))
+                        .trim(from: 0.0, to: CGFloat(min(Double(steps ?? 0) / Double(targetNumberOfSteps),1.0)))
                     //線の色と線の幅と線の先端のスタイルを指定 .roundで先端を丸めることが出来る
                         .stroke(Color.keyColor, style: StrokeStyle(lineWidth:20, lineCap: .round))
                     //アニメーションの設定
