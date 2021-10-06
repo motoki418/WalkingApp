@@ -33,9 +33,8 @@ struct HomeView: View {
     @State var steps: Int = 0
     
     var body: some View {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .percent
-        return NavigationView{
+        
+        NavigationView{
             //目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
             VStack(spacing:30){
                 Text("目標歩数は\(targetNumOfSteps)歩")
@@ -66,9 +65,9 @@ struct HomeView: View {
                     //-90度を指定して円の始まりを一番上に持ってくるための処理。デフォルトだと開始位置が0度で円が右端から始まる
                         .rotationEffect(.degrees(-90))
                     VStack{
-                        //達成率の表示
+                        //達成率を計算するメソッドを呼び出して達成率を表示
                         Text("今日の達成率は\(achievementRate())")
-                        //今日歩いた歩数が目標歩数を上回ったときと上回っていない時の処理
+                        //今日歩いた歩数が目標歩数を上回った時と上回っていない時の処理
                         //達成率が100％未満の場合
                         if steps < targetNumOfSteps{
                             Text("目標歩数まで\(targetNumOfSteps - steps)歩！")
@@ -104,9 +103,10 @@ struct HomeView: View {
                             .environment(\.locale,Locale(identifier:"ja_JP"))
                     }
                 }
+                
             })//.toolbar
         }//NavigationView
-       
+        
         .onAppear{
             //HealthKitが自分の現在のデバイスで利用可能かを確認する
             //HKHealthStore.isHealthDataAvailable() → HealthKitが利用できるかのメソッド
@@ -184,11 +184,17 @@ struct HomeView: View {
         print("query = \(query)")
     }//getDailyStepCount()
     
+    //達成率を計算するメソッド
     func achievementRate() -> String{
+        //Formatterを使用して達成率を百分率で表示する
         let formatter = NumberFormatter()
+        //数字を百分率にしたStringを得る　％表示
         formatter.numberStyle = .percent
-
-        return formatter.string(from:NSNumber(value: Double(steps) / Double(targetNumOfSteps))) ?? "0"
+        print("メソッド")
+        print(steps)
+        print(targetNumOfSteps)
+        //歩いた歩数を目標歩数で割って達成率を取得　計算結果をリターン
+        return formatter.string(from:NSNumber(value: Double(steps) / Double(targetNumOfSteps)))!
     }
 }//HomeView
 
