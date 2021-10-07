@@ -15,8 +15,8 @@ struct SettingView: View {
         NavigationView{
             Form{
                 //目標歩数を選択する画面に遷移する
-                NavigationLink(destination: PickerView()){
-                    Image(systemName: "figure.walk")
+                NavigationLink(destination:PickerView()){
+                    Image(systemName:"figure.walk")
                         .foregroundColor(.keyColor)
                     Text("目標歩数")
                     Spacer()

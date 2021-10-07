@@ -19,7 +19,6 @@
 		3667438526F8AB80006557F2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3667438426F8AB80006557F2 /* HomeView.swift */; };
 		36730FDA2704199C0020F5EC /* HealthDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36730FD92704199C0020F5EC /* HealthDataModel.swift */; };
 		36730FDD270428990020F5EC /* HealthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36730FDC270428990020F5EC /* HealthViewModel.swift */; };
-		36C6703C2705366B00700F58 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C6703B2705366B00700F58 /* Date+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,7 +37,6 @@
 		3667438426F8AB80006557F2 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		36730FD92704199C0020F5EC /* HealthDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataModel.swift; sourceTree = "<group>"; };
 		36730FDC270428990020F5EC /* HealthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthViewModel.swift; sourceTree = "<group>"; };
-		36C6703B2705366B00700F58 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +81,6 @@
 			children = (
 				363CB93326F837DA00DE3865 /* View */,
 				363CB93426F83B6900DE3865 /* ColorExtention.swift */,
-				36C6703B2705366B00700F58 /* Date+Extension.swift */,
 				363CB90526F7560100DE3865 /* walkingApp.swift */,
 				363CB90926F7560300DE3865 /* Assets.xcassets */,
 				363CB90E26F7560300DE3865 /* Info.plist */,
@@ -210,7 +207,6 @@
 				36730FDA2704199C0020F5EC /* HealthDataModel.swift in Sources */,
 				3667438526F8AB80006557F2 /* HomeView.swift in Sources */,
 				363CB90826F7560100DE3865 /* ContentView.swift in Sources */,
-				36C6703C2705366B00700F58 /* Date+Extension.swift in Sources */,
 				363CB93726F8453A00DE3865 /* PickerView.swift in Sources */,
 				363CB93526F83B6900DE3865 /* ColorExtention.swift in Sources */,
 				363CB93226F837D700DE3865 /* ReportView.swift in Sources */,
@@ -355,7 +351,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.motoki.walking;
+				PRODUCT_BUNDLE_IDENTIFIER = com.motoki.walking12;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -378,7 +374,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.motoki.walking;
+				PRODUCT_BUNDLE_IDENTIFIER = com.motoki.walking12;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

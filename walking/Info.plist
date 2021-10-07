@@ -20,6 +20,10 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSHealthShareUsageDescription</key>
+	<string>アプリでグラフを表示するためのデータをヘルスケアから取得します。</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>write health data</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -46,9 +50,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>write health data</string>
-	<key>NSHealthShareUsageDescription</key>
-	<string>アプリでグラフを表示するためのデータをヘルスケアから取得します。</string>
 </dict>
 </plist>

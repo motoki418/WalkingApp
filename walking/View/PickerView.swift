@@ -18,9 +18,9 @@ struct PickerView: View {
             //テキストには選択された歩数を表示する
             Text("\(targetNumOfSteps)歩")
                 .font(.system(size: 45))
-            //tagと@AppStorage("steps_value") var stepsValue = 2000は連動している
-            //.tagの値がselection: $timerValueにセットされて@AppStorage("steps_value") var stepsValue = 2000にデータを渡す。双方向のデータ連動ができる。
-            //選択された歩数を表示する Text("\(stepsValue)歩")の中身を変更する
+            //tagと@AppStorage("steps_value") var targetNumOfSteps = 2000は連動している
+            //.tagの値がselection: $targetNumOfStepsにセットされて@AppStorage("steps_value") var targetNumOfSteps = 2000にデータを渡す。双方向のデータ連動ができる。
+            //選択された歩数を表示する Text("\(targetNumOfSteps)歩")の中身を変更する
             Picker(selection: $targetNumOfSteps, label: Text("選択")){
                 Text("2000")
                     .tag(2000)
@@ -38,6 +38,8 @@ struct PickerView: View {
                     .tag(8000)
                 Text("9000")
                     .tag(9000)
+                Text("10000")
+                    .tag(10000)
                 Text("20000")
                     .tag(20000)
             }

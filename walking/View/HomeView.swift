@@ -9,6 +9,7 @@ import SwiftUI
 import HealthKit
 
 struct HomeView: View {
+    
     //HealthKitで管理される保存領域をHealthStoreという
     //インスタンス生成
     //ヘルスケアのデバイスデータとのやりとりはほぼ全てHKHealthStore経由で行う
@@ -28,25 +29,23 @@ struct HomeView: View {
     @AppStorage("steps_Value") var targetNumOfSteps: Int = 2000
     
     //歩数を格納する状態変数
+    //一日の始まりは歩数データがないので初期値を0で宣言
     @State var steps: Int = 0
     
     var body: some View {
         
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .percent
-        
-        return NavigationView{
+        NavigationView{
             //目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
             VStack(spacing:30){
                 Text("目標歩数は\(targetNumOfSteps)歩")
                 Text("今日の歩数は\(steps)歩")
-                ZStack{
+                //ZStackで２つのCircleを重ねて円形のプログレスバー・進捗表示を実装する
+                ZStack(){
                     //背景用のCircle
-                    //Circleの上にCircleを重ねて進捗を円で表示するプログレスバーを作成する
                     Circle()
                     //strokeは円をくり抜いて輪を作るメソッド
                     //線の色と線の幅を指定　lineWidthは線の幅を指定 デフォルトは1
-                        .stroke(Color.keyColor, style: StrokeStyle(lineWidth:20))
+                        .stroke(Color.keyColor,style:StrokeStyle(lineWidth:20))
                     //円の透明度
                         .opacity(0.2)
                     //進捗用のCircle
@@ -54,58 +53,70 @@ struct HomeView: View {
                     Circle()
                     //trim()を使うことで指定した範囲でトリミングをすることができる
                     //from:トリミング開始位置 to:トリミング終了位置　0.0 〜 1.0の間で指定
-                    //引数toを歩数が格納されている状態変数stepsの値を指定することで、歩いた歩数の進捗を表示するプログレスバーが使えるはず。
-                        .trim(from: 0.0, to: CGFloat(min(Double(steps), 1.0)))
+                    //引数toの数値を変更ことで進捗率を変更することが出来る
+                    //今回は引数toに今日歩いた歩数を目標歩数で割った達成率を設定することで、その達成率に応じて進捗を示すCircleの表示を行う
+                    //Int型で割り算すると結果はInt型になり小数点以下は切り捨てられてしまうのでstepsとtargetNumOfStepsをDouble型に変換して計算を行う
+                        .trim(from:0.0,to:CGFloat(min(Double(steps) / Double(targetNumOfSteps),1.0)))
                     //線の色と線の幅と線の先端のスタイルを指定 .roundで先端を丸めることが出来る
-                        .stroke(Color.keyColor, style: StrokeStyle(lineWidth:20, lineCap: .round))
-                    //デフォルトだと開始位置が0度で真右になっているので、-90度を指定して開始位置を上に設定
+                        .stroke(Color.keyColor,style:StrokeStyle(lineWidth:20,lineCap:.round))
+                    //アニメーションの設定
+                    //1秒かけて進捗を示すCircleを表示する
+                        .animation(.linear(duration:1.5))
+                    //-90度を指定して円の始まりを一番上に持ってくるための処理。デフォルトだと開始位置が0度で円が右端から始まる
                         .rotationEffect(.degrees(-90))
                     VStack{
-                        Text("現在の達成率は\(formatter.string(from:NSNumber(value:(Double(steps) / Double(targetNumOfSteps))))!)")
-                        //今日歩いた歩数が目標歩数を上回ったときと上回っていない時の処理
+                        //達成率を計算するメソッドを呼び出して達成率を表示
+                        Text("今日の達成率は\(achievementRate())")
+                        //今日歩いた歩数が目標歩数を上回った時と上回っていない時の処理
+                        //達成率が100％未満の場合
                         if steps < targetNumOfSteps{
                             Text("目標歩数まで\(targetNumOfSteps - steps)歩！")
-                        }else{
-                            Text("目標達成！")
+                        }
+                        //達成率が100%以上の場合
+                        else{
+                            Text("目標達成！🎉")
                         }
                     }//VStack
                 }//ZStack
                 //プログレスバーの幅と高さを指定
-                .frame(width: 300, height: 300)
-            }
+                .frame(width:300,height:300)
+            }//VStack
             .font(.title)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarLeading){
+            .toolbar{
+                //ナビゲーションバーの左端に配置
+                ToolbarItem(placement:.navigationBarLeading){
+                    
                     Button{
                         print("今日")
                     }label:{
                         Text("今日")
                     }
                 }
-                ToolbarItem(placement: .principal){
+                //ナビゲーションバーの中央に配置
+                ToolbarItem(placement:.principal){
                     Button{
                         print("DatePicker")
                     }label:{
                         //日付を選択するDatePickerを作成
                         //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
                         //displayedComponents:[.date]で日付のみを選択・表示する
-                        DatePicker("", selection: $selectionDate,displayedComponents:.date)
+                        DatePicker("",selection:$selectionDate,displayedComponents:.date)
                         //ja_JP（日本語＋日本地域）
-                            .environment(\.locale, Locale(identifier: "ja_JP"))
+                            .environment(\.locale,Locale(identifier:"ja_JP"))
                     }
                 }
-            })//.toolbar
+            }//.toolbar
         }//NavigationView
         .onAppear{
             //HealthKitが自分の現在のデバイスで利用可能かを確認する
             //HKHealthStore.isHealthDataAvailable() → HealthKitが利用できるかのメソッド
             if HKHealthStore.isHealthDataAvailable(){
-                print(type(of: readTypes))
+                print("readTypesのデータ型は\(type(of:readTypes))")
                 print("HealthKitは使えます")
                 // アプリからデバイスにデータへのアクセス権限をリクエスト
                 //toShareが書き込み、readが読み込み
-                healthStore.requestAuthorization(toShare: [], read: [readTypes]) { success, error in
+                healthStore.requestAuthorization(toShare:[],read: [readTypes]){success, error in
                     if success{
                         print("ユーザーからリクエストが承認されました")
                         //リクエストが承認されたので一日ごとの合計歩数を取得するメソッドを呼び出す
@@ -118,16 +129,17 @@ struct HomeView: View {
         }//onAppear
     }//body
     
-    // 2021/9/19の00:00:00から2021/9/26日の00:00:00までの各日の合計歩数を取得するメソッド
+    //7日前の00:00:00から今日までの各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
-        //統計の開始日とサンプルの分類方法を表す　アンカーが必要なので月曜日の深夜12時を指定
-        let anchorDate = Date.mondayAt12AM()
+        let calendar = Calendar.current
+        //統計の開始日とサンプルの分類方法を表す　アンカーが必要なので深夜0時を指定
+        let anchorDate = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: Date())
         // 今日の日付を取得
         let endDate = Date()
         //取得するデータの開始日を指定
-        let startDate = Calendar.current.date(byAdding: .day, value: -30, to: endDate)
+        let startDate = Calendar.current.date(byAdding:.day,value:-7,to:endDate)
         //取得するデータの開始(23日)と終わり(今日)を入れる
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+        let predicate = HKQuery.predicateForSamples(withStart:startDate,end:endDate,options:.strictStartDate)
         //クエリを作る
         //HKObject(HealthKitで扱えるデータオブジェクト)をHelthStoreから問い合わせるためのクエリの１つ
         //HealthKitとのデータのやり取りはこのHKObjectを介して行う
@@ -136,34 +148,69 @@ struct HomeView: View {
         //解決方法としては、HKStatisticsQueryのコレクションであるHKStatisticsCollectionQuery使用する
         //これは指定した期間の統計値を問い合わせるクエリ　グラフやチャートのデータを生成することが出来る
         //またHKStatisticsCollectionQueryではstatisticsUpdateHandlerを用いることで歩数の変更を監視することもできるので便利
-        let query = HKStatisticsCollectionQuery(quantityType: readTypes,
-                                                quantitySamplePredicate: predicate,
+        let query = HKStatisticsCollectionQuery(quantityType:readTypes,
+                                                quantitySamplePredicate:predicate,
                                                 //第3引数にHKStatisticsOptionsを指定することによって、何を基準に取得するかを指定でき
                                                 //今回はCumulativeSum（合計値）を引数として渡して、一日ごとの歩数の取得をする
-                                                options: .cumulativeSum,
+                                                options:.cumulativeSum,
                                                 //anchorDate:とintervalComponents:を組み合わせる事によって、特定の日付から決められた間隔の集計をすることができる
-                                                anchorDate: anchorDate,
+                                                anchorDate:anchorDate!,
                                                 //取得するデータの間隔を指定
                                                 //１日(毎日)ずつの間隔でデータを取得する
-                                                intervalComponents: DateComponents(day:1))
-        // クエリの実行結果のコールバックハンドラー
-        //クロージャには取得の成否がコールバックされる
-        query.initialResultsHandler = { query, statisticsCollection, error in
-            statisticsCollection?.enumerateStatistics(
-                from: startDate!,
-                to: endDate
-            ){ statistics, stop in
-                //返された各日の歩数の合計を出力
-                print( statistics.sumQuantity() ?? "nil")
-                //HKQuantity型をInt型に変換
-                self.steps = Int((statistics.sumQuantity() as AnyObject).doubleValue(for: HKUnit.count()))
+                                                intervalComponents:DateComponents(day:1))
+        //クエリの実行結果の処理
+        //クロージャには取得の成否が返される
+        query.initialResultsHandler = {query, statisticsCollection, error in
+            
+            //statisticsCollectionがnilの場合はリターンされて処理を終了する
+            guard let statisticsCollection = statisticsCollection else{
+                print("エラーです")
+                return
             }
+            //statisticsCollectionがnilではない場合は下の処理に入る
+            statisticsCollection.enumerateStatistics(from:startDate!,
+                                                     to:endDate,
+                                                     with:{(statistics,stop) in
+                //HKQuantity型をInt型に変換
+                //返されるstatistics.sumQuantity()はOptional<HKQuantity>型なのでアンラップして値(一日の歩数データの合計)を取り出す
+                //statistics.sumQuantity()をアンラップしてその日の歩数データがあればself.stepsに代入する
+                if let sum = statistics.sumQuantity(){
+                    self.steps = Int(sum.doubleValue(for: HKUnit.count()) )
+                    print("statistics.sumQuantity()のデータ型は\(type(of:statistics.sumQuantity()))")
+                    print("データがある場合はsetpsには\(steps)が入る")
+                    //返された各日(一日)の歩数の合計を出力
+                    print(statistics.sumQuantity()!)
+                }
+                //statistics.sumQuantity()をアンラップしてその日の歩数データがない場合の処理
+                else{
+                    self.steps = 0
+                    print("データがない場合はsetpsには\(steps)")
+                    print("statistics.sumQuantity()がnil")
+                }
+            })
         }
         //クエリの開始
         //提供されたクエリの実行を開始します。
         self.healthStore.execute(query)
+        print("queryの実行を開始")
         print("query = \(query)")
     }//getDailyStepCount()
+    
+    //達成率を計算するメソッド
+    func achievementRate() -> String{
+        //Formatterを使用して達成率を百分率で表示する
+        let formatter = NumberFormatter()
+        //数字を百分率にしたStringを得る　％表示
+        formatter.numberStyle = .percent
+        print("--------ここからがachievementRateメソッドの中身---------")
+        print("formatterのデータ型は\(type(of: formatter))")
+        print(type(of:  formatter.string(from:NSNumber(value: Double(steps) / Double(targetNumOfSteps)))))
+        print(steps)
+        print(targetNumOfSteps)
+        print("--------ここまでがachievementRateメソッドの中身---------")
+        //歩いた歩数を目標歩数で割って達成率を取得　計算結果をリターン
+        return formatter.string(from:NSNumber(value: Double(steps) / Double(targetNumOfSteps)))!
+    }
 }//HomeView
 
 struct HomeView_Previews: PreviewProvider {
