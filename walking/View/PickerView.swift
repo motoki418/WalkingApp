@@ -38,6 +38,8 @@ struct PickerView: View {
                     .tag(8000)
                 Text("9000")
                     .tag(9000)
+                Text("10000")
+                    .tag(10000)
                 Text("20000")
                     .tag(20000)
             }
