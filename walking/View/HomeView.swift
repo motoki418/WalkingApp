@@ -108,6 +108,23 @@ struct HomeView: View {
                 }
             }//.toolbar
         }//NavigationView
+        //minimumDistance：ドラッグを認識する範囲
+        //coordinateSpace：local：Viewの座標系  grobal：画面の座標系
+        //minimumDistanceで移動距離が150未満の時は何もしないよう指定
+        .gesture(DragGesture(minimumDistance: 150, coordinateSpace: .global)
+                    .onEnded({ value in
+            //translation属性にはドラッグ開始位置からの移動情報が含まれている
+            //CGSize型なので、.widthでX方向の距離を取得できる
+            //0未満なので左方向にスワイプした時
+            if value.translation.width < 0{
+                print("左にスワイプしました")
+            }
+            //0以上なので右方向にスワイプした時
+            else if value.translation.width > 0{
+                print("右にスワイプしました")
+            }
+        })
+        )//.gesture
         .onAppear{
             //HealthKitが自分の現在のデバイスで利用可能かを確認する
             //HKHealthStore.isHealthDataAvailable() → HealthKitが利用できるかのメソッド
