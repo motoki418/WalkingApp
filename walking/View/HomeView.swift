@@ -169,6 +169,8 @@ struct HomeView: View {
         //解決方法としては、HKStatisticsQueryのコレクションであるHKStatisticsCollectionQuery使用する
         //これは指定した期間の統計値を問い合わせるクエリ　グラフやチャートのデータを生成することが出来る
         //またHKStatisticsCollectionQueryではstatisticsUpdateHandlerを用いることで歩数の変更を監視することもできるので便利
+        //統計クエリ(HKStatisticsCollectionQuery)を使用して、一連の個別の数量の最小値・最大値・平均値を計算したり、累積数量の合計を計算したりできます。
+        //またオブザーバークエリと同様に統計収集クエリは実行時間の長いクエリとして機能し、HealthKitストアのコンテンツが変更されたときに更新を受け取ります。
         let query = HKStatisticsCollectionQuery(quantityType:readTypes,
                                                 quantitySamplePredicate:predicate,
                                                 //第3引数にHKStatisticsOptionsを指定することによって、何を基準に取得するかを指定でき
@@ -181,21 +183,25 @@ struct HomeView: View {
                                                 intervalComponents:DateComponents(day:1))
         //クエリの実行結果の処理
         //クロージャには取得の成否が返される
-        query.initialResultsHandler = {query, statisticsCollection, error in
-            
-            //statisticsCollectionがnilの場合はリターンされて処理を終了する
-            guard let statisticsCollection = statisticsCollection else{
+        query.initialResultsHandler = {query, results, error in
+            //results(HKStatisticsCollection?)からクエリ結果を取り出してnilの場合はリターンされて処理を終了する
+            guard let statisticsCollection = results else{
                 print("エラーです")
                 return
             }
             //statisticsCollectionがnilではない場合は下の処理に入る
+            //クエリ結果から期間（開始日・終了日）を指定して歩数の統計情報をstatisticsに取り出す。
             statisticsCollection.enumerateStatistics(from:startDate!,
                                                      to:endDate,
                                                      with:{(statistics,stop) in
+                //statisticsに最小単位（今回は１日分の歩数）のサンプルデータが返ってくる。
+                //statistics.sumQuantity()でサンプルデータの合計（１日の合計歩数）を取得する。
                 //HKQuantity型をInt型に変換
                 //返されるstatistics.sumQuantity()はOptional<HKQuantity>型なのでアンラップして値(一日の歩数データの合計)を取り出す
                 //statistics.sumQuantity()をアンラップしてその日の歩数データがあればself.stepsに代入する
                 if let sum = statistics.sumQuantity(){
+                    //サンプルデータはquantity.doubleValueで取り出し、単位を指定して取得する。
+                    //単位：歩数の場合HKUnit.count()と指定する。歩行距離の場合：HKUnit(from: "m/s")といった単位を指定する。
                     self.steps = Int(sum.doubleValue(for: HKUnit.count()) )
                     print("statistics.sumQuantity()のデータ型は\(type(of:statistics.sumQuantity()))")
                     print("データがある場合はsetpsには\(steps)が入る")
