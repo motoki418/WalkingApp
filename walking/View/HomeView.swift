@@ -33,10 +33,30 @@ struct HomeView: View {
     @State var steps: Int = 0
     
     var body: some View {
-        
         NavigationView{
             //目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
             VStack(spacing:30){
+                //DatePickerで選択した日付と、-1day、+1dayを押して取得した日付を表示
+                Text("\(self.selectionDate, style:.date)")
+                //ja_JP（日本語＋日本地域）
+                    .environment(\.locale,Locale(identifier:"ja_JP"))
+                //-1dayと+1dayボタンを横並び
+                HStack{
+                    Button{
+                        //ボタンをタップした時に、表示している日付から一日分の秒数(-24*60*60)を引いて前日の日付を表示
+                        selectionDate.addTimeInterval(-24*60*60)
+                        print(selectionDate)
+                    }label:{
+                        Text("-1 day")
+                    }
+                    Button{
+                        //ボタンをタップした時に、表示している日付に一日分の秒数(24*60*60)を足して翌日の日付を表示
+                        selectionDate.addTimeInterval(24*60*60)
+                        print(selectionDate)
+                    }label:{
+                        Text("+1 day")
+                    }
+                }//HStack
                 Text("目標歩数は\(targetNumOfSteps)歩")
                 Text("今日の歩数は\(steps)歩")
                 //ZStackで２つのCircleを重ねて円形のプログレスバー・進捗表示を実装する
@@ -86,8 +106,9 @@ struct HomeView: View {
             .toolbar{
                 //ナビゲーションバーの左端に配置
                 ToolbarItem(placement:.navigationBarLeading){
-                    
                     Button{
+                        //今日の日付を取得
+                        selectionDate = Date()
                         print("今日")
                     }label:{
                         Text("今日")
