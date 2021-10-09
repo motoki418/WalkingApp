@@ -109,24 +109,22 @@ struct HomeView: View {
             }//.toolbar
         }//NavigationView
         //スワイプ機能
-        //minimumDistance: 100でスワイプした距離が100に満たない場合はスワイプを検知しない
-        .gesture(DragGesture(minimumDistance: 100.0, coordinateSpace: .local)
+//        //minimumDistance: 100でスワイプした距離が100に満たない場合はスワイプを検知しない
+        .gesture(DragGesture(minimumDistance: 100, coordinateSpace: .local)
                     .onEnded({ value in
             //translation属性にはドラッグ開始位置からの移動情報が含まれている
             //CGSize型なので、.widthでX方向の距離を取得できる
             //0未満なので左方向にスワイプした時　かつ.heightでY方向にスワイプしたときの距離が-50~50の間に制限して、
             //上下にスワイプした時はスワイプを検知しないように設定
             if value.translation.width < 0 && value.translation.height > -50 && value.translation.height < 50 {
-                print("左にスワイプしました")
-                print("width\(value.translation.width)")
-                print("height\(value.translation.height)")
+                let a = value.translation.width
+                print("横移動：検知した：\(a)")
             }
             //0以上なので右方向にスワイプした時　かつ.heightでY方向にスワイプしたときの距離が-50~50の間に制限することで、
             //上下にスワイプした時はスワイプを検知しないように設定
             else if value.translation.width > 0 && value.translation.height > -50 && value.translation.height < 50 {
-                print("右にスワイプしました")
-                print("width\(value.translation.width)")
-                print("height\(value.translation.height)")
+                let a = value.translation.width
+                print("横移動：検知した：\(a)")
             }
         })
         )//.gesture
