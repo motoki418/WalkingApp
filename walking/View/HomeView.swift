@@ -109,7 +109,8 @@ struct HomeView: View {
             }//.toolbar
         }//NavigationView
         //スワイプ機能
-        .gesture(DragGesture()
+        //minimumDistance: 100でスワイプした距離が100に満たない場合はスワイプを検知しない
+        .gesture(DragGesture(minimumDistance: 100.0, coordinateSpace: .local)
                     .onEnded({ value in
             //translation属性にはドラッグ開始位置からの移動情報が含まれている
             //CGSize型なので、.widthでX方向の距離を取得できる
