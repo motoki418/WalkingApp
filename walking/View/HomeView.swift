@@ -113,19 +113,22 @@ struct HomeView: View {
         .gesture(DragGesture(minimumDistance: 100, coordinateSpace: .local)
                     .onEnded({ value in
             //minimumDistanceが正常に機能しているのかを確認する
+            //スワイプした距離が100を超えた場合にprint文を出力
             let moveWidth = value.translation.width
             let moveHeight = value.translation.height
             print("横移動量：\(moveWidth)")
             print("縦移動量：\(moveHeight)")
-            //スワイプした距離が100を超えた場合に下の２つの条件式に入る
-            //translation属性にはドラッグ開始位置からの移動情報が含まれている　CGSize型なので、.widthでX方向の距離を取得できる
-            //0未満なので左方向にスワイプした時　かつ.heightでY方向にスワイプしたときの距離が-50~50の間に制限して、上下にスワイプした時はスワイプを検知しないように設定
-            if value.translation.width < 0 && value.translation.height > -50 && value.translation.height < 50 {
-               print("左方向のスワイプ")
-            }
-            //0以上なので右方向にスワイプした時　かつ.heightでY方向にスワイプしたときの距離が-50~50の間に制限することで、上下にスワイプした時はスワイプを検知しないように設定
-            else if value.translation.width > 0 && value.translation.height > -50 && value.translation.height < 50 {
-                print("右方向のスワイプ")
+            //.heightでY方向にスワイプしたときの距離が-50~50の間に制限することで、どちらかの条件に合わない時は何もしない
+            //縦方向、斜め方向のスワイプを無視する条件式
+            if -50 < value.translation.height && value.translation.height < 50 {
+                //左方向にスワイプした時
+                if value.translation.width < -100  {
+                    print("左方向のスワイプ")
+                }
+                //右方向にスワイプした時
+                else if value.translation.width > 100{
+                    print("右方向のスワイプ")
+                }
             }
         })
         )//.gesture
