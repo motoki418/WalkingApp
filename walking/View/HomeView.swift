@@ -109,7 +109,7 @@ struct HomeView: View {
             }//.toolbar
         }//NavigationView
         //スワイプ機能
-        //minimumDistance: 100でスワイプした距離が100に満たない場合はスワイプを検知しない
+        //minimumDistance: 100でスワイプした移動量が100に満たない場合はスワイプを検知しない
         .gesture(DragGesture(minimumDistance: 100, coordinateSpace: .local)
                     .onEnded({ value in
             //minimumDistanceが正常に機能しているのかを確認する
@@ -118,17 +118,21 @@ struct HomeView: View {
             let moveHeight = value.translation.height
             print("横移動量：\(moveWidth)")
             print("縦移動量：\(moveHeight)")
-            //.heightでY方向にスワイプしたときの距離が-50~50の間に制限することで、どちらかの条件に合わない時は何もしない
             //縦方向、斜め方向のスワイプを無視する条件式
-            if -50 < value.translation.height && value.translation.height < 50 {
-                //左方向にスワイプした時
-                if value.translation.width < -100  {
-                    print("左方向のスワイプ")
-                }
-                //右方向にスワイプした時
-                else if value.translation.width > 100{
-                    print("右方向のスワイプ")
-                }
+            //どちらかの条件が当てはまった時は何もしない　上方向の移動量が-50以上　もしくは下方向の移動量が50以上の場合は何もしない(途中でreturnするという意味)
+            //.heightで縦方向(Y方向)にスワイプしたときの移動量が-50~50の間(どちらの条件にも当てはまらなかった場合)であれば左右にスワイプした時の条件式に進む
+            if value.translation.height < -50 || 50 < value.translation.height{
+                return
+            }
+            //左方向にスワイプした時の条件式
+            //左方向の移動量が-100以上の時にprintで出力
+            if value.translation.width < -100{
+                print("左方向のスワイプ")
+            }
+            //右方向にスワイプした時
+            //右方向の移動量が100以上の時にprintで出力
+            else if value.translation.width > 100{
+                print("右方向のスワイプ")
             }
         })
         )//.gesture
