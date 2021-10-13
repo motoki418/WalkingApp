@@ -22,9 +22,10 @@ struct HomeView: View {
     //quantityTypeメソッドの引数にIDを指定　stepCountは歩数のID
     let readTypes: HKQuantityType = (HKObjectType.quantityType(forIdentifier: .stepCount)!)
     
+    let calendar = Calendar(identifier: .gregorian)
+   
     //選択した日付を保持する状態変数
-    @State private var selectionDate = Date()
-    
+    @State var selectionDate = Date()
     //歩数設定画面で選択された歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") var targetNumOfSteps: Int = 2000
     
@@ -45,16 +46,15 @@ struct HomeView: View {
                     Button{
                         //ボタンをタップした時に、表示している日付から一日分の秒数(-24*60*60)を引いて前日の日付を表示
                         selectionDate.addTimeInterval(-24*60*60)
-                        print(selectionDate)
                     }label:{
-                        Text("-1 day")
+                        Text("\(selectionDate)")
                     }
                     Button{
                         //ボタンをタップした時に、表示している日付に一日分の秒数(24*60*60)を足して翌日の日付を表示
                         selectionDate.addTimeInterval(24*60*60)
                         print(selectionDate)
                     }label:{
-                        Text("+1 day")
+                        Text("\(RelativeDateofTime1())")
                     }
                 }//HStack
                 Text("目標歩数は\(targetNumOfSteps)歩")
@@ -152,7 +152,7 @@ struct HomeView: View {
     
     //7日前の00:00:00から今日までの各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
-        let calendar = Calendar.current
+        
         //統計の開始日とサンプルの分類方法を表す　アンカーが必要なので深夜0時を指定
         let anchorDate = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: Date())
         // 今日の日付を取得
@@ -222,6 +222,16 @@ struct HomeView: View {
         print("queryの実行を開始")
         print("query = \(query)")
     }//getDailyStepCount()
+    func RelativeDateofTime() -> Date{
+        let oneday = DateComponents(day: -1)
+        let oneAfterday = calendar.date(byAdding: oneday, to: selectionDate)
+        return oneAfterday!
+    }
+    func RelativeDateofTime1() -> String{
+        let dateFormatter = RelativeDateTimeFormatter()
+        dateFormatter.dateTimeStyle = .numeric
+        return dateFormatter.localizedString(from: DateComponents(day: 1))
+    }
     
     //達成率を計算するメソッド
     func achievementRate() -> String{
