@@ -9,7 +9,6 @@ import SwiftUI
 import HealthKit
 
 struct HomeView: View {
-    
     //HealthKitで管理される保存領域をHealthStoreという
     //インスタンス生成
     //ヘルスケアのデバイスデータとのやりとりはほぼ全てHKHealthStore経由で行う
@@ -23,7 +22,6 @@ struct HomeView: View {
     let readTypes: HKQuantityType = (HKObjectType.quantityType(forIdentifier: .stepCount)!)
     
     let calendar = Calendar(identifier: .gregorian)
-   
     //選択した日付を保持する状態変数
     @State var selectionDate = Date()
     //歩数設定画面で選択された歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
@@ -54,7 +52,7 @@ struct HomeView: View {
                         selectionDate.addTimeInterval(24*60*60)
                         print(selectionDate)
                     }label:{
-                        Text("\(RelativeDateofTime1())")
+                        Text("\(selectionDate)")
                     }
                 }//HStack
                 Text("目標歩数は\(targetNumOfSteps)歩")
@@ -222,16 +220,6 @@ struct HomeView: View {
         print("queryの実行を開始")
         print("query = \(query)")
     }//getDailyStepCount()
-    func RelativeDateofTime() -> Date{
-        let oneday = DateComponents(day: -1)
-        let oneAfterday = calendar.date(byAdding: oneday, to: selectionDate)
-        return oneAfterday!
-    }
-    func RelativeDateofTime1() -> String{
-        let dateFormatter = RelativeDateTimeFormatter()
-        dateFormatter.dateTimeStyle = .numeric
-        return dateFormatter.localizedString(from: DateComponents(day: 1))
-    }
     
     //達成率を計算するメソッド
     func achievementRate() -> String{
