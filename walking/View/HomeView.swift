@@ -22,8 +22,10 @@ struct HomeView: View {
     let readTypes: HKQuantityType = (HKObjectType.quantityType(forIdentifier: .stepCount)!)
     
     let calendar = Calendar(identifier: .gregorian)
+    
     //選択した日付を保持する状態変数
-    @State var selectionDate = Date()
+    @State var selectionDate:Date = Date()
+    
     //歩数設定画面で選択された歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") var targetNumOfSteps: Int = 2000
     
@@ -32,24 +34,30 @@ struct HomeView: View {
     @State var steps: Int = 0
     
     var body: some View {
+        
         NavigationView{
             //目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
             VStack(spacing:30){
                 //DatePickerで選択した日付と、-1day、+1dayを押して取得した日付を表示
-                Text("\(self.selectionDate, style:.date)")
+                Text("\(self.selectionDate,style:.date)")
                 //ja_JP（日本語＋日本地域）
                     .environment(\.locale,Locale(identifier:"ja_JP"))
                 //-1dayと+1dayボタンを横並び
-                HStack{
+                VStack{
                     Button{
-                        //ボタンをタップした時に、表示している日付から一日分の秒数(-24*60*60)を引いて前日の日付を表示
-                        selectionDate.addTimeInterval(-24*60*60)
+                        //ボタンをタップした時に、表示している日付から一日分を引いて前日の日付を表示
+                        let beforeOneMonth = DateComponents(day:-1)//1ヶ月
+                        //Calendar型の日時計算関数を利用して一日前を表示
+                        selectionDate = calendar.date(byAdding: beforeOneMonth,to: selectionDate)!
+                        print(type(of: selectionDate))
+                        print(selectionDate)
                     }label:{
                         Text("\(selectionDate)")
                     }
+                    Spacer()
                     Button{
-                        //ボタンをタップした時に、表示している日付に一日分の秒数(24*60*60)を足して翌日の日付を表示
-                        selectionDate.addTimeInterval(24*60*60)
+                        //ボタンをタップした時に、表示している日付に一日分を足して翌日の日付を表示
+                        selectionDate = calendar.date(byAdding: DateComponents(day:1),to: Date())!
                         print(selectionDate)
                     }label:{
                         Text("\(selectionDate)")
@@ -123,6 +131,7 @@ struct HomeView: View {
                         DatePicker("",selection:$selectionDate,displayedComponents:.date)
                         //ja_JP（日本語＋日本地域）
                             .environment(\.locale,Locale(identifier:"ja_JP"))
+                        
                     }
                 }
             }//.toolbar
