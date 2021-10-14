@@ -57,7 +57,7 @@ struct HomeView: View {
                     Spacer()
                     Button{
                         //ボタンをタップした時に、表示している日付に一日分を足して翌日の日付を表示
-                        selectionDate = calendar.date(byAdding: DateComponents(day:1),to: Date())!
+                        selectionDate = calendar.date(byAdding: DateComponents(day:1),to: selectionDate)!
                         print(selectionDate)
                     }label:{
                         Text("\(selectionDate)")
