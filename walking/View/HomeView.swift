@@ -9,7 +9,6 @@ import SwiftUI
 import HealthKit
 
 struct HomeView: View {
-    
     //HealthKitで管理される保存領域をHealthStoreという
     //インスタンス生成
     //ヘルスケアのデバイスデータとのやりとりはほぼ全てHKHealthStore経由で行う
@@ -22,8 +21,11 @@ struct HomeView: View {
     //quantityTypeメソッドの引数にIDを指定　stepCountは歩数のID
     let readTypes: HKQuantityType = (HKObjectType.quantityType(forIdentifier: .stepCount)!)
     
+    //日時計算クラスCalenderのインスタンスを生成
+    let calendar = Calendar(identifier: .gregorian)
+    
     //選択した日付を保持する状態変数
-    @State private var selectionDate = Date()
+    @State var selectionDate:Date = Date()
     
     //歩数設定画面で選択された歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") var targetNumOfSteps: Int = 2000
@@ -37,6 +39,35 @@ struct HomeView: View {
         NavigationView{
             //目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
             VStack(spacing:30){
+                //DatePickerで選択した日付と、-1day、+1dayを押して取得した日付を表示
+                Text("\(self.selectionDate,style:.date)")
+                //ja_JP（日本語＋日本地域）
+                    .environment(\.locale,Locale(identifier:"ja_JP"))
+                //-1dayと+1dayボタンを横並び
+                HStack{
+                    Button{
+                        //ボタンをタップした時に、表示している日付から一日分を引いて前日の日付を表示
+                        //Calendar型の日時計算関数を利用して一日前を表示
+                        selectionDate = calendar.date(byAdding:DateComponents(day:-1),to: selectionDate)!
+                        print("----- -1dayボタン-------")
+                        print("selectionDateは\(type(of: selectionDate))")
+                        print("selectionDateは\(selectionDate)")
+                        print("Dateは\(Date())")
+                        print("----- -1dayボタン-------")
+                    }label:{
+                        Text("-1day")
+                    }
+                    Button{
+                        //ボタンをタップした時に、表示している日付に一日分を足して翌日の日付を表示
+                        selectionDate = calendar.date(byAdding: DateComponents(day:1),to: selectionDate)!
+                        print("-----+1dayボタン-------")
+                        print("selectionDateは\(selectionDate)")
+                        print("Dateは\(Date())")
+                        print("-----+1dayボタン-------")
+                    }label:{
+                        Text("+1day")
+                    }
+                }//HStack
                 Text("目標歩数は\(targetNumOfSteps)歩")
                 Text("今日の歩数は\(steps)歩")
                 //ZStackで２つのCircleを重ねて円形のプログレスバー・進捗表示を実装する
@@ -86,9 +117,13 @@ struct HomeView: View {
             .toolbar{
                 //ナビゲーションバーの左端に配置
                 ToolbarItem(placement:.navigationBarLeading){
-                    
                     Button{
-                        print("今日")
+                        //今日の日付を取得
+                        selectionDate = Date()
+                        print("--------今日ボタン-------")
+                        print("selectionDateは\(selectionDate)")
+                        print("Dateは\(Date())")
+                        print("--------今日ボタン-------")
                     }label:{
                         Text("今日")
                     }
@@ -96,7 +131,6 @@ struct HomeView: View {
                 //ナビゲーションバーの中央に配置
                 ToolbarItem(placement:.principal){
                     Button{
-                        print("DatePicker")
                     }label:{
                         //日付を選択するDatePickerを作成
                         //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
@@ -140,17 +174,13 @@ struct HomeView: View {
             //HealthKitが自分の現在のデバイスで利用可能かを確認する
             //HKHealthStore.isHealthDataAvailable() → HealthKitが利用できるかのメソッド
             if HKHealthStore.isHealthDataAvailable(){
-                print("readTypesのデータ型は\(type(of:readTypes))")
-                print("HealthKitは使えます")
                 // アプリからデバイスにデータへのアクセス権限をリクエスト
                 //toShareが書き込み、readが読み込み
                 healthStore.requestAuthorization(toShare:[],read: [readTypes]){success, error in
                     if success{
-                        print("ユーザーからリクエストが承認されました")
                         //リクエストが承認されたので一日ごとの合計歩数を取得するメソッドを呼び出す
                         getDailyStepCount()
                     }else{
-                        print("ユーザーからリクエストが否認されました")
                     }
                 }//requestAuthorization
             }//if HKHealthStore.isHealthDataAvailable()
@@ -159,7 +189,7 @@ struct HomeView: View {
     
     //7日前の00:00:00から今日までの各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
-        let calendar = Calendar.current
+        
         //統計の開始日とサンプルの分類方法を表す　アンカーが必要なので深夜0時を指定
         let anchorDate = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: Date())
         // 今日の日付を取得
@@ -176,6 +206,8 @@ struct HomeView: View {
         //解決方法としては、HKStatisticsQueryのコレクションであるHKStatisticsCollectionQuery使用する
         //これは指定した期間の統計値を問い合わせるクエリ　グラフやチャートのデータを生成することが出来る
         //またHKStatisticsCollectionQueryではstatisticsUpdateHandlerを用いることで歩数の変更を監視することもできるので便利
+        //統計クエリ(HKStatisticsCollectionQuery)を使用して、一連の個別の数量の最小値・最大値・平均値を計算したり、累積数量の合計を計算したりできます。
+        //またオブザーバークエリと同様に統計収集クエリは実行時間の長いクエリとして機能し、HealthKitストアのコンテンツが変更されたときに更新を受け取ります。
         let query = HKStatisticsCollectionQuery(quantityType:readTypes,
                                                 quantitySamplePredicate:predicate,
                                                 //第3引数にHKStatisticsOptionsを指定することによって、何を基準に取得するかを指定でき
@@ -188,40 +220,35 @@ struct HomeView: View {
                                                 intervalComponents:DateComponents(day:1))
         //クエリの実行結果の処理
         //クロージャには取得の成否が返される
-        query.initialResultsHandler = {query, statisticsCollection, error in
-            
-            //statisticsCollectionがnilの場合はリターンされて処理を終了する
-            guard let statisticsCollection = statisticsCollection else{
-                print("エラーです")
+        query.initialResultsHandler = {query, results, error in
+            //results(HKStatisticsCollection?)からクエリ結果を取り出してnilの場合はリターンされて処理を終了する
+            guard let statisticsCollection = results else{
                 return
             }
             //statisticsCollectionがnilではない場合は下の処理に入る
+            //クエリ結果から期間（開始日・終了日）を指定して歩数の統計情報をstatisticsに取り出す。
             statisticsCollection.enumerateStatistics(from:startDate!,
                                                      to:endDate,
                                                      with:{(statistics,stop) in
+                //statisticsに最小単位（今回は１日分の歩数）のサンプルデータが返ってくる。
+                //statistics.sumQuantity()でサンプルデータの合計（１日の合計歩数）を取得する。
                 //HKQuantity型をInt型に変換
                 //返されるstatistics.sumQuantity()はOptional<HKQuantity>型なのでアンラップして値(一日の歩数データの合計)を取り出す
                 //statistics.sumQuantity()をアンラップしてその日の歩数データがあればself.stepsに代入する
                 if let sum = statistics.sumQuantity(){
-                    self.steps = Int(sum.doubleValue(for: HKUnit.count()) )
-                    print("statistics.sumQuantity()のデータ型は\(type(of:statistics.sumQuantity()))")
-                    print("データがある場合はsetpsには\(steps)が入る")
-                    //返された各日(一日)の歩数の合計を出力
-                    print(statistics.sumQuantity()!)
+                    //サンプルデータはquantity.doubleValueで取り出し、単位を指定して取得する。
+                    //単位：歩数の場合HKUnit.count()と指定する。歩行距離の場合：HKUnit(from: "m/s")といった単位を指定する。
+                    self.steps = Int(sum.doubleValue(for: HKUnit.count()))
                 }
                 //statistics.sumQuantity()をアンラップしてその日の歩数データがない場合の処理
                 else{
                     self.steps = 0
-                    print("データがない場合はsetpsには\(steps)")
-                    print("statistics.sumQuantity()がnil")
                 }
             })
         }
         //クエリの開始
         //提供されたクエリの実行を開始します。
         self.healthStore.execute(query)
-        print("queryの実行を開始")
-        print("query = \(query)")
     }//getDailyStepCount()
     
     //達成率を計算するメソッド
@@ -230,12 +257,6 @@ struct HomeView: View {
         let formatter = NumberFormatter()
         //数字を百分率にしたStringを得る　％表示
         formatter.numberStyle = .percent
-        print("--------ここからがachievementRateメソッドの中身---------")
-        print("formatterのデータ型は\(type(of: formatter))")
-        print(type(of:  formatter.string(from:NSNumber(value: Double(steps) / Double(targetNumOfSteps)))))
-        print(steps)
-        print(targetNumOfSteps)
-        print("--------ここまでがachievementRateメソッドの中身---------")
         //歩いた歩数を目標歩数で割って達成率を取得　計算結果をリターン
         return formatter.string(from:NSNumber(value: Double(steps) / Double(targetNumOfSteps)))!
     }
