@@ -21,6 +21,7 @@ struct HomeView: View {
     //quantityTypeメソッドの引数にIDを指定　stepCountは歩数のID
     let readTypes: HKQuantityType = (HKObjectType.quantityType(forIdentifier: .stepCount)!)
     
+    //日時計算クラスCalenderのインスタンスを生成
     let calendar = Calendar(identifier: .gregorian)
     
     //選択した日付を保持する状態変数
@@ -43,24 +44,28 @@ struct HomeView: View {
                 //ja_JP（日本語＋日本地域）
                     .environment(\.locale,Locale(identifier:"ja_JP"))
                 //-1dayと+1dayボタンを横並び
-                VStack{
+                HStack{
                     Button{
                         //ボタンをタップした時に、表示している日付から一日分を引いて前日の日付を表示
-                        let beforeOneMonth = DateComponents(day:-1)//1ヶ月
                         //Calendar型の日時計算関数を利用して一日前を表示
-                        selectionDate = calendar.date(byAdding: beforeOneMonth,to: selectionDate)!
-                        print(type(of: selectionDate))
-                        print(selectionDate)
+                        selectionDate = calendar.date(byAdding:DateComponents(day:-1),to: selectionDate)!
+                        print("----- -1dayボタン-------")
+                        print("selectionDateは\(type(of: selectionDate))")
+                        print("selectionDateは\(selectionDate)")
+                        print("Dateは\(Date())")
+                        print("----- -1dayボタン-------")
                     }label:{
-                        Text("\(selectionDate)")
+                        Text("-1day")
                     }
-                    Spacer()
                     Button{
                         //ボタンをタップした時に、表示している日付に一日分を足して翌日の日付を表示
                         selectionDate = calendar.date(byAdding: DateComponents(day:1),to: selectionDate)!
-                        print(selectionDate)
+                        print("-----+1dayボタン-------")
+                        print("selectionDateは\(selectionDate)")
+                        print("Dateは\(Date())")
+                        print("-----+1dayボタン-------")
                     }label:{
-                        Text("\(selectionDate)")
+                        Text("+1day")
                     }
                 }//HStack
                 Text("目標歩数は\(targetNumOfSteps)歩")
@@ -115,7 +120,10 @@ struct HomeView: View {
                     Button{
                         //今日の日付を取得
                         selectionDate = Date()
-                        print("今日")
+                        print("--------今日ボタン-------")
+                        print("selectionDateは\(selectionDate)")
+                        print("Dateは\(Date())")
+                        print("--------今日ボタン-------")
                     }label:{
                         Text("今日")
                     }
@@ -123,7 +131,6 @@ struct HomeView: View {
                 //ナビゲーションバーの中央に配置
                 ToolbarItem(placement:.principal){
                     Button{
-                        print("DatePicker")
                     }label:{
                         //日付を選択するDatePickerを作成
                         //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
@@ -131,7 +138,6 @@ struct HomeView: View {
                         DatePicker("",selection:$selectionDate,displayedComponents:.date)
                         //ja_JP（日本語＋日本地域）
                             .environment(\.locale,Locale(identifier:"ja_JP"))
-                        
                     }
                 }
             }//.toolbar
@@ -140,17 +146,13 @@ struct HomeView: View {
             //HealthKitが自分の現在のデバイスで利用可能かを確認する
             //HKHealthStore.isHealthDataAvailable() → HealthKitが利用できるかのメソッド
             if HKHealthStore.isHealthDataAvailable(){
-                print("readTypesのデータ型は\(type(of:readTypes))")
-                print("HealthKitは使えます")
                 // アプリからデバイスにデータへのアクセス権限をリクエスト
                 //toShareが書き込み、readが読み込み
                 healthStore.requestAuthorization(toShare:[],read: [readTypes]){success, error in
                     if success{
-                        print("ユーザーからリクエストが承認されました")
                         //リクエストが承認されたので一日ごとの合計歩数を取得するメソッドを呼び出す
                         getDailyStepCount()
                     }else{
-                        print("ユーザーからリクエストが否認されました")
                     }
                 }//requestAuthorization
             }//if HKHealthStore.isHealthDataAvailable()
@@ -193,7 +195,6 @@ struct HomeView: View {
         query.initialResultsHandler = {query, results, error in
             //results(HKStatisticsCollection?)からクエリ結果を取り出してnilの場合はリターンされて処理を終了する
             guard let statisticsCollection = results else{
-                print("エラーです")
                 return
             }
             //statisticsCollectionがnilではない場合は下の処理に入る
@@ -209,25 +210,17 @@ struct HomeView: View {
                 if let sum = statistics.sumQuantity(){
                     //サンプルデータはquantity.doubleValueで取り出し、単位を指定して取得する。
                     //単位：歩数の場合HKUnit.count()と指定する。歩行距離の場合：HKUnit(from: "m/s")といった単位を指定する。
-                    self.steps = Int(sum.doubleValue(for: HKUnit.count()) )
-                    print("statistics.sumQuantity()のデータ型は\(type(of:statistics.sumQuantity()))")
-                    print("データがある場合はsetpsには\(steps)が入る")
-                    //返された各日(一日)の歩数の合計を出力
-                    print(statistics.sumQuantity()!)
+                    self.steps = Int(sum.doubleValue(for: HKUnit.count()))
                 }
                 //statistics.sumQuantity()をアンラップしてその日の歩数データがない場合の処理
                 else{
                     self.steps = 0
-                    print("データがない場合はsetpsには\(steps)")
-                    print("statistics.sumQuantity()がnil")
                 }
             })
         }
         //クエリの開始
         //提供されたクエリの実行を開始します。
         self.healthStore.execute(query)
-        print("queryの実行を開始")
-        print("query = \(query)")
     }//getDailyStepCount()
     
     //達成率を計算するメソッド
@@ -236,12 +229,6 @@ struct HomeView: View {
         let formatter = NumberFormatter()
         //数字を百分率にしたStringを得る　％表示
         formatter.numberStyle = .percent
-        print("--------ここからがachievementRateメソッドの中身---------")
-        print("formatterのデータ型は\(type(of: formatter))")
-        print(type(of:  formatter.string(from:NSNumber(value: Double(steps) / Double(targetNumOfSteps)))))
-        print(steps)
-        print(targetNumOfSteps)
-        print("--------ここまでがachievementRateメソッドの中身---------")
         //歩いた歩数を目標歩数で割って達成率を取得　計算結果をリターン
         return formatter.string(from:NSNumber(value: Double(steps) / Double(targetNumOfSteps)))!
     }
