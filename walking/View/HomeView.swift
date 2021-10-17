@@ -19,20 +19,29 @@ struct HomeView: View {
     //扱うデータが歩数なのでデータの種類は「HKQuantityType」
     //HKQuantityTypeを生成するには何のデータを表すかのIDが必要、以下のように生成 100 種類以上のデータが扱えるので、引数にはその種類を表す ID を与え
     //quantityTypeメソッドの引数にIDを指定　stepCountは歩数のID
-    let readTypes: HKQuantityType = (HKObjectType.quantityType(forIdentifier: .stepCount)!)
+    private let readTypes: HKQuantityType = (HKObjectType.quantityType(forIdentifier: .stepCount)!)
     
     //日時計算クラスCalenderのインスタンスを生成
-    let calendar = Calendar(identifier: .gregorian)
+    private let calendar: Calendar = Calendar(identifier: .gregorian)
     
     //選択した日付を保持する状態変数
-    @State var selectionDate:Date = Date()
+    @State private var selectionDate: Date = Date() {
+        willSet{
+            print("willset\(selectionDate)")
+        }
+        didSet {
+            getDailyStepCount()
+            print("didset\(selectionDate)")
+            
+        }
+    }
     
     //歩数設定画面で選択された歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") var targetNumOfSteps: Int = 2000
     
     //歩数を格納する状態変数
     //一日の始まりは歩数データがないので初期値を0で宣言
-    @State var steps: Int = 0
+    @State private var steps: Int = 0
     
     var body: some View {
         
@@ -43,31 +52,6 @@ struct HomeView: View {
                 Text("\(self.selectionDate,style:.date)")
                 //ja_JP（日本語＋日本地域）
                     .environment(\.locale,Locale(identifier:"ja_JP"))
-                //-1dayと+1dayボタンを横並び
-                HStack{
-                    Button{
-                        //ボタンをタップした時に、表示している日付から一日分を引いて前日の日付を表示
-                        //Calendar型の日時計算関数を利用して一日前を表示
-                        selectionDate = calendar.date(byAdding:DateComponents(day:-1),to: selectionDate)!
-                        print("----- -1dayボタン-------")
-                        print("selectionDateは\(type(of: selectionDate))")
-                        print("selectionDateは\(selectionDate)")
-                        print("Dateは\(Date())")
-                        print("----- -1dayボタン-------")
-                    }label:{
-                        Text("-1day")
-                    }
-                    Button{
-                        //ボタンをタップした時に、表示している日付に一日分を足して翌日の日付を表示
-                        selectionDate = calendar.date(byAdding: DateComponents(day:1),to: selectionDate)!
-                        print("-----+1dayボタン-------")
-                        print("selectionDateは\(selectionDate)")
-                        print("Dateは\(Date())")
-                        print("-----+1dayボタン-------")
-                    }label:{
-                        Text("+1day")
-                    }
-                }//HStack
                 Text("目標歩数は\(targetNumOfSteps)歩")
                 Text("今日の歩数は\(steps)歩")
                 //ZStackで２つのCircleを重ねて円形のプログレスバー・進捗表示を実装する
@@ -136,6 +120,9 @@ struct HomeView: View {
                         //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
                         //displayedComponents:[.date]で日付のみを選択・表示する
                         DatePicker("",selection:$selectionDate,displayedComponents:.date)
+                            .onChange(of: selectionDate, perform: { _ in
+                                getDailyStepCount()
+                            })
                         //ja_JP（日本語＋日本地域）
                             .environment(\.locale,Locale(identifier:"ja_JP"))
                     }
@@ -158,15 +145,23 @@ struct HomeView: View {
             if value.translation.height < -50 || 50 < value.translation.height{
                 return
             }
-            //左方向にスワイプした時の条件式
+            //左方向にスワイプした時に表示している日付に一日分を足して翌日の日付を表示するための条件式
             //左方向の移動量が-100以上の時にprintで出力
             if value.translation.width < -100{
+                //Calendar型の日時計算関数を利用して翌日を表示
+                selectionDate = calendar.date(byAdding: DateComponents(day:1),to: selectionDate)!
+                print("selectionDateは\(selectionDate)")
                 print("左方向のスワイプ")
+                print(steps)
             }
-            //右方向にスワイプした時
+            //右方向にスワイプした時に表示している日付から一日分を引いて前日の日付を表示するための条件式
             //右方向の移動量が100以上の時にprintで出力
             else if value.translation.width > 100{
+                //Calendar型の日時計算関数を利用して前日を表示
+                selectionDate = calendar.date(byAdding:DateComponents(day:-1),to: selectionDate)!
+                print("selectionDateは\(selectionDate)")
                 print("右方向のスワイプ")
+                print(steps)
             }
         })
         )//.gesture
@@ -189,13 +184,12 @@ struct HomeView: View {
     
     //7日前の00:00:00から今日までの各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
-        
-        //統計の開始日とサンプルの分類方法を表す　アンカーが必要なので深夜0時を指定
-        let anchorDate = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: Date())
-        // 今日の日付を取得
-        let endDate = Date()
         //取得するデータの開始日を指定
-        let startDate = Calendar.current.date(byAdding:.day,value:-7,to:endDate)
+        //統計の開始日とサンプルの分類方法を表す　アンカーが必要なので深夜0時を指定
+        let startDate  = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: selectionDate)
+        let endDate = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: selectionDate)
+        print(startDate!)
+        print(endDate!)
         //取得するデータの開始(23日)と終わり(今日)を入れる
         let predicate = HKQuery.predicateForSamples(withStart:startDate,end:endDate,options:.strictStartDate)
         //クエリを作る
@@ -214,7 +208,7 @@ struct HomeView: View {
                                                 //今回はCumulativeSum（合計値）を引数として渡して、一日ごとの歩数の取得をする
                                                 options:.cumulativeSum,
                                                 //anchorDate:とintervalComponents:を組み合わせる事によって、特定の日付から決められた間隔の集計をすることができる
-                                                anchorDate:anchorDate!,
+                                                anchorDate:startDate!,
                                                 //取得するデータの間隔を指定
                                                 //１日(毎日)ずつの間隔でデータを取得する
                                                 intervalComponents:DateComponents(day:1))
@@ -228,7 +222,7 @@ struct HomeView: View {
             //statisticsCollectionがnilではない場合は下の処理に入る
             //クエリ結果から期間（開始日・終了日）を指定して歩数の統計情報をstatisticsに取り出す。
             statisticsCollection.enumerateStatistics(from:startDate!,
-                                                     to:endDate,
+                                                     to:selectionDate,
                                                      with:{(statistics,stop) in
                 //statisticsに最小単位（今回は１日分の歩数）のサンプルデータが返ってくる。
                 //statistics.sumQuantity()でサンプルデータの合計（１日の合計歩数）を取得する。
@@ -239,10 +233,15 @@ struct HomeView: View {
                     //サンプルデータはquantity.doubleValueで取り出し、単位を指定して取得する。
                     //単位：歩数の場合HKUnit.count()と指定する。歩行距離の場合：HKUnit(from: "m/s")といった単位を指定する。
                     self.steps = Int(sum.doubleValue(for: HKUnit.count()))
+                    print("statistics.sumQuantity()のデータ型は\(type(of:statistics.sumQuantity()))")
+                    print("データがある場合はsetpsには\(steps)が入る")
+                    //返された各日(一日)の歩数の合計を出力
+                    print(statistics.sumQuantity()!)
                 }
                 //statistics.sumQuantity()をアンラップしてその日の歩数データがない場合の処理
                 else{
                     self.steps = 0
+                    print("statistics.sumQuantity()がnil")
                 }
             })
         }

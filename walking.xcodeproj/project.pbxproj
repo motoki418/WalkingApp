@@ -343,6 +343,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = walking/walking.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"walking/Preview Content\"";
 				DEVELOPMENT_TEAM = 3BBTSUW2QV;
 				ENABLE_PREVIEWS = YES;
@@ -356,7 +357,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.motoki.walking12;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -368,6 +369,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = walking/walking.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"walking/Preview Content\"";
 				DEVELOPMENT_TEAM = 3BBTSUW2QV;
 				ENABLE_PREVIEWS = YES;
@@ -381,7 +383,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.motoki.walking12;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
