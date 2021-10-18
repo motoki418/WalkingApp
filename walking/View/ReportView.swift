@@ -17,7 +17,7 @@ struct ReportView: View {
     }
     //Pickerの現在選択されているtagの値を格納するための状態変数（初期値は.weekなので週間が選択された状態）
     //Picker(selection: $selectionPeriod)と連動している
-    @State var selectionPeriod:period = .week
+    @State var selectionPeriod: period = .week
     
     var body: some View {
         NavigationView{
