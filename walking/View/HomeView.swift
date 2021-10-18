@@ -19,7 +19,7 @@ struct HomeView: View {
     //扱うデータが歩数なのでデータの種類は「HKQuantityType」
     //HKQuantityTypeを生成するには何のデータを表すかのIDが必要、以下のように生成 100 種類以上のデータが扱えるので、引数にはその種類を表す ID を与え
     //quantityTypeメソッドの引数にIDを指定　stepCountは歩数のID
-    private let readTypes: HKQuantityType = (HKObjectType.quantityType(forIdentifier: .stepCount)!)
+    private let readTypes: HKQuantityType = HKObjectType.quantityType(forIdentifier: .stepCount)!
     
     //日時計算クラスCalenderのインスタンスを生成
     private let calendar: Calendar = Calendar(identifier: .gregorian)
@@ -51,7 +51,7 @@ struct HomeView: View {
                 Text("目標歩数は\(targetNumOfSteps)歩")
                 Text("今日の歩数は\(steps)歩")
                 //ZStackで２つのCircleを重ねて円形のプログレスバー・進捗表示を実装する
-                ZStack(){
+                ZStack{
                     //背景用のCircle
                     Circle()
                     //strokeは円をくり抜いて輪を作るメソッド
@@ -88,11 +88,11 @@ struct HomeView: View {
                             Text("目標達成！🎉")
                         }
                     }//VStack
+                    
                 }//ZStack
                 //プログレスバーの幅と高さを指定
                 .frame(width:300,height:300)
-            }//VStack
-            .font(.title)
+            }//VStack(spacing:30)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                 //ナビゲーションバーの左端に配置
@@ -102,6 +102,7 @@ struct HomeView: View {
                         selectionDate = Date()
                         print("--------今日ボタン-------")
                         print("selectionDateは\(selectionDate)")
+                        print("Dateは\(Date())")
                         print(steps)
                         print("--------今日ボタン-------")
                     }label:{
@@ -110,22 +111,28 @@ struct HomeView: View {
                 }
                 //ナビゲーションバーの中央に配置
                 ToolbarItem(placement:.principal){
+                    //日付を選択するDatePickerを作成
+                    //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
+                    //displayedComponents:[.date]で日付のみを選択・表示する
+                    DatePicker("",selection:$selectionDate,displayedComponents:.date)
+                    //プロパティの変更を検知する.onChangeを使用してselectionDateに格納されている日付が変更されたら、 getDailyStepCount()を呼び出して日付に合った歩数を表示する
+                        .onChange(of: selectionDate, perform: { _ in
+                            getDailyStepCount()
+                        })
+                        .labelsHidden()
+                    //ja_JP（日本語＋日本地域）
+                        .environment(\.locale,Locale(identifier:"ja_JP"))
+                }
+                //ナビゲーションバーの右端に配置 リロードボタン
+                ToolbarItem{
                     Button{
                     }label:{
-                        //日付を選択するDatePickerを作成
-                        //selectionには、選択した日付を保持する状態変数selectionDateの値に$を付与して参照渡しが出来るようにする
-                        //displayedComponents:[.date]で日付のみを選択・表示する
-                        DatePicker("",selection:$selectionDate,displayedComponents:.date)
-                        //プロパティの変更を検知する.onChangeを使用してselectionDateに格納されている日付が変更されたら、 getDailyStepCount()を呼び出して日付に合った歩数を表示する
-                            .onChange(of: selectionDate, perform: { _ in
-                                getDailyStepCount()
-                            })
-                        //ja_JP（日本語＋日本地域）
-                            .environment(\.locale,Locale(identifier:"ja_JP"))
+                        Image(systemName: "arrow.clockwise")
                     }
                 }
             }//.toolbar
         }//NavigationView
+        .font(.title2)
         //スワイプ機能
         //minimumDistance: 100でスワイプした移動量が100に満たない場合はスワイプを検知しない
         .gesture(DragGesture(minimumDistance: 100, coordinateSpace: .local)
@@ -141,7 +148,7 @@ struct HomeView: View {
             //何もしない = 途中でreturnするという意味
             //.heightで縦方向(Y方向)にスワイプしたときの移動量が-50~50の間
             //どちらかの条件に当てはまらなかった場合は左右にスワイプした時の条件式に進む
-            if value.translation.height < -50 || 50 < value.translation.height{
+            if value.translation.height < -160 || 160 < value.translation.height{
                 return
             }
             //左方向にスワイプした時に表示している日付に一日分を足して翌日の日付を表示するための条件式
