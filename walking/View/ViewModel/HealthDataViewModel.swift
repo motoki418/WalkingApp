@@ -32,7 +32,6 @@ class HealthDataViewModel: ObservableObject{
     //quantityTypeメソッドの引数にIDを指定　stepCountは歩数のID
     let readTypes = HKObjectType.quantityType(forIdentifier: .stepCount)!
     
-    
     //日時計算クラスCalenderのインスタンスを生成
     let calendar: Calendar = Calendar(identifier: .gregorian)
     
