@@ -8,20 +8,21 @@
 import SwiftUI
 
 struct PickerView: View {
-    //選択されている歩数を保持するための状態変数（初期値は2000）
-    @AppStorage("steps_Value") private var targetNumOfSteps: Int = 2000
-    
+    //HealthDataViewModelを参照する状態変数
+    //これでViewがViewModelのデータを監視できるようになる
+    @ObservedObject private var HealthDataVM = HealthDataViewModel()
     
     var body: some View {
         VStack{
             Spacer()
-            //テキストには選択された歩数を表示する
-            Text("\(targetNumOfSteps)歩")
+            //選択された歩数を表示する
+            Text("\(HealthDataVM.targetNumOfSteps)歩")
                 .font(.system(size: 45))
-            //tagと@AppStorage("steps_value") var targetNumOfSteps = 2000は連動している
-            //.tagの値がselection: $targetNumOfStepsにセットされて@AppStorage("steps_value") var targetNumOfSteps = 2000にデータを渡す。双方向のデータ連動ができる。
-            //選択された歩数を表示する Text("\(targetNumOfSteps)歩")の中身を変更する
-            Picker(selection: $targetNumOfSteps, label: Text("選択")){
+            //選択された歩数が(selection:$HealthDataVM.targetNumOfSteps)にセットされて、
+            //HealthDataViewModelの @AppStorage("steps_value") var targetNumOfSteps = 2000にデータを渡してデータの永続化がされる。
+            //SettingViewやHomeViewでも選択された目標歩数を利用できるようになる。
+            //選択された歩数を表示するText("\(HealthDataVM.targetNumOfSteps)歩")の中身を変更する
+            Picker(selection:$HealthDataVM.targetNumOfSteps,label:Text("選択")){
                 Text("2000")
                     .tag(2000)
                 Text("3000")

@@ -9,46 +9,38 @@ import SwiftUI
 import HealthKit
 
 struct ReportView: View {
-    //週間、月間、年間を列挙型で管理
-    enum period: String{
-        case week = "週間"
-        case month = "月間"
-        case year = "年間"
-    }
-    //Pickerの現在選択されているtagの値を格納するための状態変数（初期値は.weekなので週間が選択された状態）
-    //Picker(selection: $selectionPeriod)と連動している
-    @State var selectionPeriod: period = .week
+    //HealthDataViewModelを参照する状態変数
+    //これでViewがViewModelのデータを監視できるようになる
+    @ObservedObject private var HealthDataVM = HealthDataViewModel()
     
     var body: some View {
         NavigationView{
             VStack{
                 //Pickerで選択した期間を表示
-                Text("\(selectionPeriod.rawValue)")
+                Text("\(HealthDataVM.selectionPeriod.rawValue)")
             }
             .toolbar{
-                ToolbarItem(placement: .principal){
-                    //tagと @State var selectionPeriod:periodは連動している
-                    //Pickerで期間が選択されると、選択されたtagの値(期間)がselection:$selectionPeriodにセットされて、
-                    //@State var selectionPeriod:periodに選択された期間を渡す。
-                    //@State var selectionPeriod:periodにtagの値が渡されると、
-                    //Pickerで選択された期間を表示するText("\(selectionPeriod.rawValue)")の中身を変更する
-                    //双方向のデータ連動ができる。
-                    Picker(selection:$selectionPeriod,label:Text("選択")){
+                ToolbarItem(placement:.principal){
+                    //HealthDataViewModelの @Published var selectionPeriod: period = .weekから
+                    //週間、月間、年間を列挙型で管理するperiod列挙体の状態の変化を受信してPickerに表示する。
+                    //選択された期間が(selection:$HealthDataVM.selectionPeriod)にセットされて、
+                    //選択された期間を表示するText("\(HealthDataVM.selectionPeriod.rawValue)")の中身を変更する。
+                    Picker(selection:$HealthDataVM.selectionPeriod,label:Text("選択")){
                         //Pickerの左側に週間を表示
-                        Text("\(period.week.rawValue)")
-                            .tag(period.week)
+                        Text("\(HealthDataViewModel.period.week.rawValue)")
+                            .tag(HealthDataViewModel.period.week)
                         //Pickerの真ん中に月間を表示
-                        Text("\(period.month.rawValue)")
-                            .tag(period.month)
+                        Text("\(HealthDataViewModel.period.month.rawValue)")
+                            .tag(HealthDataViewModel.period.month)
                         //Pickerの右側に年間を表示
-                        Text("\(period.year.rawValue)")
-                            .tag(period.year)
+                        Text("\(HealthDataViewModel.period.year.rawValue)")
+                            .tag(HealthDataViewModel.period.year)
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     //Pickerの幅を指定
                     .frame(width:300)
                 }
-            }
+            }//.toolbar
         }//NavigationView
     }
 }

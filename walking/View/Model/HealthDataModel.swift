@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct HealthDataModel: Identifiable {
-    let id: String
-    let date: Date
-    let count: String
+struct HealthDataModel : Identifiable{
+    var id = UUID()
+    var date: Date
+    var count: Int
 }
