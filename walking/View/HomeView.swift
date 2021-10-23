@@ -11,7 +11,7 @@ import HealthKit
 struct HomeView: View {
     //HealthDataViewModelを参照する状態変数
     //これでViewがViewModelのデータを監視できるようになる
-    @ObservedObject private var HealthDataVM = HealthDataViewModel()
+    @ObservedObject private var HealthDataVM :  HealthDataViewModel = HealthDataViewModel()
     
     var body: some View {
         NavigationView{

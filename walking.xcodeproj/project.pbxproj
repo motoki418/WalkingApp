@@ -80,8 +80,10 @@
 			isa = PBXGroup;
 			children = (
 				363CB93326F837DA00DE3865 /* View */,
-				363CB93426F83B6900DE3865 /* ColorExtention.swift */,
+				36730FDB2704260C0020F5EC /* ViewModel */,
+				36730FD8270419850020F5EC /* Model */,
 				363CB90526F7560100DE3865 /* walkingApp.swift */,
+				363CB93426F83B6900DE3865 /* ColorExtention.swift */,
 				363CB90926F7560300DE3865 /* Assets.xcassets */,
 				363CB90E26F7560300DE3865 /* Info.plist */,
 				362DE5AE26FB430A009B9294 /* walking.entitlements */,
@@ -106,8 +108,6 @@
 				363CB93126F837D700DE3865 /* ReportView.swift */,
 				363CB92F26F837B500DE3865 /* SettingView.swift */,
 				363CB93626F8453A00DE3865 /* PickerView.swift */,
-				36730FDB2704260C0020F5EC /* ViewModel */,
-				36730FD8270419850020F5EC /* Model */,
 			);
 			path = View;
 			sourceTree = "<group>";
