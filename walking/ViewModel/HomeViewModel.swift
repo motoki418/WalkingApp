@@ -8,7 +8,7 @@
 import SwiftUI
 import HealthKit
 
-class HealthDataViewModel: ObservableObject{
+class HomeViewModel: ObservableObject{
     init() {
         //iOS15ではラージタイトルだけでなくすべてのナビゲーションバー・タブバーにscrollEdgeAppearanceが適用されるようになったので、
         //iOS15未満と同じ挙動にするにはscrollEdgeAppearanceを指定する必要があるよう。
@@ -46,24 +46,10 @@ class HealthDataViewModel: ObservableObject{
         }
         //selectionDateの値変更後
         didSet {
-            //getDailyStepCount()
+            getDailyStepCount()
             print("didset\(selectionDate)")
         }
     }
-    //レポート画面のPickerで現在選択されているtagの値を格納するための状態変数（初期値は.weekなので週間が選択された状態）
-    //@Publishedを付与してReportViewに状態の変更を通知できるようにする
-    @Published var selectionPeriod: period = .week
-    
-    //週間、月間、年間を列挙型で管理
-    //このperiod列挙体の状態を @PublishedでReportViewに配信する
-    enum period: String{
-        case week = "週間"
-        case month = "月間"
-        case year = "年間"
-    }
-    
-    //歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
-    @AppStorage("steps_Value") var targetNumOfSteps: Int = 2000
     
     //00:00:00~23:59:59までを一日分として各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
@@ -156,13 +142,5 @@ class HealthDataViewModel: ObservableObject{
         healthStore.execute(query)
     }//getDailyStepCount()
     
-    //達成率を計算するメソッド
-    func achievementRate() -> String{
-        //Formatterを使用して達成率を百分率で表示する
-        let formatter = NumberFormatter()
-        //数字を百分率にしたStringを得る　％表示
-        formatter.numberStyle = .percent
-        //歩いた歩数を目標歩数で割って達成率を取得　計算結果をリターン
-        return formatter.string(from:NSNumber(value: Double(steps) / Double(targetNumOfSteps)))!
-    }
+    
 }
