@@ -14,7 +14,7 @@ struct HomeView: View {
     @ObservedObject private var HomeVM: HomeViewModel = HomeViewModel()
     
     //歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
-    @AppStorage("steps_Value") var targetNumOfSteps: Int = 2000
+    @AppStorage("steps_Value") private var targetNumOfSteps: Int = 2000
     
     var body: some View {
         NavigationView{
