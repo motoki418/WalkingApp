@@ -15,8 +15,11 @@ struct HomeView: View {
     
     var body: some View {
         NavigationView{
-            //目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
+            //日付、目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
             VStack(spacing:30){
+                Text("日付は\(HealthDataVM.selectionDate, style:.date)")
+                //ja_JP（日本語＋日本地域）
+                    .environment(\.locale,Locale(identifier:"ja_JP"))
                 //PickerViewで設定した目標歩数がHealthDataViewModelの
                 //@AppStorage("HealthDataVM.steps_Value") var targetNumOfHealthDataVM.steps: Int = 2000 に格納されているので表示する
                 Text("目標歩数は\(HealthDataVM.targetNumOfSteps)歩")
@@ -43,7 +46,7 @@ struct HomeView: View {
                         .stroke(Color.keyColor,style:StrokeStyle(lineWidth:20,lineCap:.round))
                     //アニメーションの設定
                     //1.3秒かけて進捗を示すCircleを表示する
-                        .animation(.linear(duration:1.3))
+                        .animation(.linear(duration:1))
                     //-90度を指定して円の始まりを一番上に持ってくるための処理。デフォルトだと開始位置が0度で円が右端から始まる
                         .rotationEffect(.degrees(-90))
                     VStack{

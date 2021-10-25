@@ -67,10 +67,13 @@ class HealthDataViewModel: ObservableObject{
     
     //00:00:00~23:59:59までを一日分として各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
+        //スワイプした時に日付が変わったことをわかりやすくするために取得した歩数を0にしてプログレスバーを再レンダリングする
+        DispatchQueue.main.async {
+            self.steps = 0
+        }
         //統計の開始時間と終了時間をして　00:00:00~23:459:59までを一日分として歩数データを取得する
         let startDate  = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: selectionDate)
         let endDate = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: selectionDate)
-        print("startDate\(startDate!) endDate\(endDate!)")
         //取得するデータの開始時間と終了時間を引数に指定
         let predicate = HKQuery.predicateForSamples(withStart:startDate,end:endDate,options:.strictStartDate)
         //クエリを作る
