@@ -4,7 +4,7 @@
 //
 //  Created by nakamura motoki on 2021/09/20.
 //
-
+//
 //import SwiftUI
 //import HealthKit
 //
@@ -12,7 +12,7 @@
 //    //HealthDataViewModelを参照する状態変数
 //    //これでViewがViewModelのデータを監視できるようになる
 //    @ObservedObject private var HealthDataVM = HealthDataViewModel()
-//    
+//
 //    var body: some View {
 //        NavigationView{
 //            VStack{

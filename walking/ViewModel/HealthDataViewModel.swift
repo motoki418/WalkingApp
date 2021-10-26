@@ -68,7 +68,8 @@ class HealthDataViewModel: ObservableObject{
     //00:00:00~23:59:59までを一日分として各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
         //スワイプした時に日付が変わったことをわかりやすくするために取得した歩数を0にしてプログレスバーを再レンダリングする
-        DispatchQueue.main.async {
+        //asyncは非同期で処理することを意味
+        DispatchQueue.main.async{
             self.steps = 0
         }
         //統計の開始時間と終了時間をして　00:00:00~23:459:59までを一日分として歩数データを取得する
@@ -97,12 +98,19 @@ class HealthDataViewModel: ObservableObject{
                                                 intervalComponents:DateComponents(day:1))
         //クエリの実行結果の処理
         //クロージャには取得の成否が返される
-        query.initialResultsHandler = { [self]query, results, error in
+        query.initialResultsHandler = {query, results, error in
             //results(HKStatisticsCollection?)からクエリ結果を取り出してnilの場合はリターンされて処理を終了する
             guard let statisticsCollection = results else{
                 return
             }
-            DispatchQueue.main.async {
+            
+            //タスクの遅延追加（asyncAfter） 設定時間経過後にタスクが追加される。
+            //DispatchQueue.main.asyncでメインスレッドですぐに非同期で実行されますが、
+            //これをDispatchQueue.main.asyncAfter(deadline: .now() + 1.0)にすることで1秒後に歩数データの取得を実行する事が出来る。
+            // .nowはこのコードがよばれた時の現在時刻で1.0は1秒後に処理を実行したいという意味
+            //DispatchQueueとはGCD（Grand Central Dispatch）の一部で、適切な優先度や実行スレッドを決めて、タスクを実行する仕組みです。
+            //歩数を0にしてから1病後に歩数の取得処理を行う
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
                 //statisticsCollectionがnilではない場合は下の処理に入る
                 //クエリ結果から期間（開始日・終了日）を指定して歩数の統計情報をstatisticsに取り出す。
                 statisticsCollection.enumerateStatistics(from:startDate!,
