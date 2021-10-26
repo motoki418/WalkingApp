@@ -9,6 +9,4 @@ import Foundation
 import SwiftUI
 
 class SettingViewModel: ObservableObject{
-    
-    
 }

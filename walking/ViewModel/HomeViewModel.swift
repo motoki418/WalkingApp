@@ -35,8 +35,9 @@ class HomeViewModel: ObservableObject{
     //日時計算クラスCalenderのインスタンスを生成
     let calendar: Calendar = Calendar(identifier: .gregorian)
     
-    //歩数を格納する状態変数
-    @Published var steps: Int = 0
+    //HealthDataModelのインスタンス変数HealthDMに @Publishedを付与してHomeViewに状態の変更を通知できるようにする
+    //インスタンス生成の際にHealthDataModelで定義した変数の初期値を設定する
+    @Published var HealthDM: HealthDataModel = HealthDataModel(date: Date(), steps: 0)
     
     //選択した日付を保持する状態変数
     @Published var selectionDate: Date = Date() {
@@ -56,7 +57,7 @@ class HomeViewModel: ObservableObject{
         //統計の開始時間と終了時間をして　00:00:00~23:459:59までを一日分として歩数データを取得する
         let startDate  = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: selectionDate)
         let endDate = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: selectionDate)
-        print("startDate\(startDate!) endDate\(endDate!)")
+        //HealhStatsクラスを配列で保持するインスタンス変数
         //取得するデータの開始時間と終了時間を引数に指定
         let predicate = HKQuery.predicateForSamples(withStart:startDate,end:endDate,options:.strictStartDate)
         //クエリを作る
@@ -99,13 +100,16 @@ class HomeViewModel: ObservableObject{
                     if let sum = statistics.sumQuantity(){
                         //サンプルデータはquantity.doubleValueで取り出し、単位を指定して取得する。
                         //単位：歩数の場合HKUnit.count()と指定する。歩行距離の場合：HKUnit(from: "m/s")といった単位を指定する。
-                        self.steps = Int(sum.doubleValue(for: HKUnit.count()))
-                        //返された各日(一日)の歩数の合計を出力
-                        print(statistics.sumQuantity()!)
+                        self.HealthDM.steps = Int(sum.doubleValue(for: HKUnit.count()))
+                        //dateには統計の開始時間15:00:00 +0000が渡されて、stepsには今日の歩数を合計した値を引数として渡して、
+                        //@Publishedを付与した変数HealthDMに代入してHomeViewに状態の変更を配信できるようにする。
+                        self.HealthDM = HealthDataModel(date:statistics.startDate,steps:HealthDM.steps)
+                        print("歩数取得後のHealthDataModelのstepsの値は\(HealthDM.steps)歩")
+                        print("歩数取得後のHealthDataModelのdateの日付は統計の開始時間である\(HealthDM.date)")
                     }
                     //statistics.sumQuantity()をアンラップしてその日の歩数データがない場合の処理
                     else{
-                        self.steps = 0
+                        self.HealthDM.steps = 0
                         print("HealthDataVM.stepsはnil")
                     }
                 })
@@ -126,13 +130,15 @@ class HomeViewModel: ObservableObject{
                 if let sum = statistics.sumQuantity(){
                     //サンプルデータはquantity.doubleValueで取り出し、単位を指定して取得する。
                     //単位：歩数の場合HKUnit.count()と指定する。歩行距離の場合：HKUnit(from: "m/s")といった単位を指定する。
-                    self.steps = Int(sum.doubleValue(for: HKUnit.count()))
-                    //返された各日(一日)の歩数の合計を出力
-                    print(statistics.sumQuantity()!)
+                    self.HealthDM.steps = Int(sum.doubleValue(for: HKUnit.count()))
+                    //歩数の取得を開始した日付と歩数をHealthDataModel構造体の変数の値として渡して、
+                    //@Publishedを付与した変数HealthDMに代入してHomeViewに状態の変更を配信できるようにする。
+                    //dateには統計の開始時間15:00:00 +0000が渡されて、stepsには今日の歩数を合計した値が渡される
+                    self.HealthDM = HealthDataModel(date:statistics.startDate,steps:self.HealthDM.steps)
                 }
                 //statistics.sumQuantity()をアンラップしてその日の歩数データがない場合の処理
                 else{
-                    self.steps = 0
+                    self.HealthDM.steps = 0
                     print("HealthDataVM.stepsはnil")
                 }
             })
@@ -141,6 +147,4 @@ class HomeViewModel: ObservableObject{
         //提供されたクエリの実行を開始します。
         healthStore.execute(query)
     }//getDailyStepCount()
-    
-    
 }

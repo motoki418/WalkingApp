@@ -11,7 +11,7 @@ import HealthKit
 struct HomeView: View {
     //HomeViewModelを参照する状態変数
     //これでViewがViewModelのデータを監視できるようになる
-    @ObservedObject private var HomeVM: HomeViewModel = HomeViewModel()
+    @ObservedObject var HomeVM:HomeViewModel = HomeViewModel()
     
     //歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") private var targetNumOfSteps: Int = 2000
@@ -23,7 +23,7 @@ struct HomeView: View {
                 //PickerViewで設定した目標歩数がHomeViewModelの
                 //@AppStorage("steps_Value") var targetNumOfsteps: Int = 2000 に格納されているので表示する
                 Text("目標歩数は\(targetNumOfSteps)歩")
-                Text("今日の歩数は\(HomeVM.steps)歩")
+                Text("今日の歩数は\(HomeVM.HealthDM.steps)歩")
                 //ZStackで２つのCircleを重ねて円形のプログレスバー・進捗表示を実装する
                 ZStack{
                     //背景用のCircle
@@ -40,8 +40,9 @@ struct HomeView: View {
                     //from:トリミング開始位置 to:トリミング終了位置　0.0 〜 1.0の間で指定
                     //引数toの数値を変更ことで進捗率を変更することが出来る
                     //今回は引数toに今日歩いた歩数を目標歩数で割った達成率を設定することで、その達成率に応じて進捗を示すCircleの表示を行う
-                    //Int型で割り算すると結果はInt型になり小数点以下は切り捨てられてしまうのでHomeVM.stepsとtargetNumOfHomeVM.stepsをDouble型に変換して計算を行う
-                        .trim(from:0.0,to:CGFloat(min(Double(HomeVM.steps) / Double(targetNumOfSteps),1.0)))
+                    //Int型で割り算すると結果はInt型になり小数点以下は切り捨てられてしまうのでHomeVM.HealthDM.stepsと
+                    //targetNumOfstepsをDouble型に変換して計算を行う
+                        .trim(from:0.0,to:CGFloat(min(Double(HomeVM.HealthDM.steps) / Double(targetNumOfSteps),1.0)))
                     //線の色と線の幅と線の先端のスタイルを指定 .roundで先端を丸めることが出来る
                         .stroke(Color.keyColor,style:StrokeStyle(lineWidth:20,lineCap:.round))
                     //アニメーションの設定
@@ -54,8 +55,8 @@ struct HomeView: View {
                         Text("今日の達成率は\(achievementRate())")
                         //今日歩いた歩数が目標歩数を上回った時と上回っていない時の処理
                         //達成率が100％未満の場合
-                        if HomeVM.steps < targetNumOfSteps{
-                            Text("目標歩数まで\(targetNumOfSteps - HomeVM.steps)歩！")
+                        if HomeVM.HealthDM.steps < targetNumOfSteps{
+                            Text("目標歩数まで\(targetNumOfSteps - HomeVM.HealthDM.steps)歩！")
                         }
                         //達成率が100%以上の場合
                         else{
@@ -143,7 +144,7 @@ struct HomeView: View {
                 HomeVM.healthStore.requestAuthorization(toShare:[],read:[HomeVM.readTypes]){success, error in
                     if success{
                         //リクエストが承認されたので一日ごとの合計歩数を取得するメソッドを呼び出す
-                        HomeVM.getDailyStepCount()
+                        self.HomeVM.getDailyStepCount()
                     }
                 }//requestAuthorization
             }//if HKHealthStore.isHealthDataAvailable()
@@ -156,7 +157,7 @@ struct HomeView: View {
         //数字を百分率にしたStringを得る　％表示
         formatter.numberStyle = .percent
         //歩いた歩数を目標歩数で割って達成率を取得　計算結果をリターン
-        return formatter.string(from:NSNumber(value: Double(HomeVM.steps) / Double(targetNumOfSteps)))!
+        return formatter.string(from:NSNumber(value:Double(HomeVM.HealthDM.steps) / Double(targetNumOfSteps)))!
     }
 }//HomeView
 

@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-
+//歩数データについての構造体を定義
 struct HealthDataModel : Identifiable{
     var id = UUID()
     var date: Date
-    var count: Int
+    var steps: Int
 }
