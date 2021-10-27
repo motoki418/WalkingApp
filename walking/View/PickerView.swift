@@ -8,10 +8,6 @@
 import SwiftUI
 
 struct PickerView: View {
-    //SettingViewModelを参照する状態変数
-    //これでViewがViewModelのデータを監視できるようになる
-    @ObservedObject private var SettingVM: SettingViewModel = SettingViewModel()
-    
     //歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") private var targetNumOfSteps: Int = 2000
     

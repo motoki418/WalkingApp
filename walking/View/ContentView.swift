@@ -8,6 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
+    init() {
+        //iOS15ではラージタイトルだけでなくすべてのナビゲーションバー・タブバーにscrollEdgeAppearanceが適用されるようになったので、
+        //iOS15未満と同じ挙動にするにはscrollEdgeAppearanceを指定する必要があるよう。
+        //iOS15ではUITabBarが透明になってしまうことがあるので、iOS15未満と同じ挙動にするにはiOS15+のscrollEdgeAppearanceを指定する。
+        //タブバーの外観がおかしい時はナビゲーションバーと同様の対応をする。
+        if #available(iOS 15.0,*) {
+            let appearance = UITabBarAppearance()
+            appearance.shadowColor = UIColor(Color.keyColor)
+            UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
+    }
     var body: some View {
         TabView{
             //円グラフと目標までの歩数を表示する画面
