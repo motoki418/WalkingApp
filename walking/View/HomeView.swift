@@ -45,7 +45,7 @@ struct HomeView: View {
                     //線の色と線の幅と線の先端のスタイルを指定 .roundで先端を丸めることが出来る
                         .stroke(Color.keyColor,style:StrokeStyle(lineWidth:20,lineCap:.round))
                     //アニメーションの設定
-                    //1.3秒かけて進捗を示すCircleを表示する
+                    //1秒かけて進捗を示すCircleを表示する
                         .animation(.linear(duration:1))
                     //-90度を指定して円の始まりを一番上に持ってくるための処理。デフォルトだと開始位置が0度で円が右端から始まる
                         .rotationEffect(.degrees(-90))

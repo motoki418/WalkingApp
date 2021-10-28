@@ -15,11 +15,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("ホーム",systemImage:"house.fill")
                 }
-            //週間・月間・年間の歩数と距離を棒グラフで表示する画面
-//            ReportView()//2枚目の子ビュー
-//                .tabItem {
-//                    Label("レポート",systemImage:"chart.bar.fill")
-//                }
+            
             //アプリのテーマカラーと目標歩数を設定する画面
             SettingView()//3枚目の子ビュー
                 .tabItem {

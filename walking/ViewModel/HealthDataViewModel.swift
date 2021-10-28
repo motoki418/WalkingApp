@@ -68,7 +68,7 @@ class HealthDataViewModel: ObservableObject{
     //00:00:00~23:59:59までを一日分として各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
         //スワイプした時に日付が変わったことをわかりやすくするために取得した歩数を0にしてプログレスバーを再レンダリングする
-        //asyncは非同期で処理することを意味
+        //@Publishedの変数を更新するときはメインスレッドで更新する必要がある
         DispatchQueue.main.async{
             self.steps = 0
         }
@@ -103,39 +103,41 @@ class HealthDataViewModel: ObservableObject{
             guard let statisticsCollection = results else{
                 return
             }
-            
-            //タスクの遅延追加（asyncAfter） 設定時間経過後にタスクが追加される。
-            //DispatchQueue.main.asyncでメインスレッドですぐに非同期で実行されますが、
-            //これをDispatchQueue.main.asyncAfter(deadline: .now() + 1.0)にすることで1秒後に歩数データの取得を実行する事が出来る。
-            // .nowはこのコードがよばれた時の現在時刻で1.0は1秒後に処理を実行したいという意味
-            //DispatchQueueとはGCD（Grand Central Dispatch）の一部で、適切な優先度や実行スレッドを決めて、タスクを実行する仕組みです。
-            //歩数を0にしてから1病後に歩数の取得処理を行う
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-                //statisticsCollectionがnilではない場合は下の処理に入る
-                //クエリ結果から期間（開始日・終了日）を指定して歩数の統計情報をstatisticsに取り出す。
-                statisticsCollection.enumerateStatistics(from:startDate!,
-                                                         to:self.selectionDate,
-                                                         with:{(statistics,stop) in
-                    //statisticsに最小単位（今回は１日分の歩数）のサンプルデータが返ってくる。
-                    //statistics.sumQuantity()でサンプルデータの合計（１日の合計歩数）を取得する。
-                    //HKQuantity型をInt型に変換
-                    //返されるstatistics.sumQuantity()はOptional<HKQuantity>型なのでアンラップして値(一日の歩数データの合計)を取り出す
-                    //statistics.sumQuantity()をアンラップしてその日の歩数データがあればself.stepsに代入する
-                    if let sum = statistics.sumQuantity(){
+            //statisticsCollectionがnilではない場合は下の処理に入る
+            //クエリ結果から期間（開始日・終了日）を指定して歩数の統計情報をstatisticsに取り出す。
+            statisticsCollection.enumerateStatistics(from:startDate!,
+                                                     to:self.selectionDate,
+                                                     with:{(statistics,stop) in
+                //statisticsに最小単位（今回は１日分の歩数）のサンプルデータが返ってくる。
+                //statistics.sumQuantity()でサンプルデータの合計（１日の合計歩数）を取得する。
+                //HKQuantity型をInt型に変換
+                //返されるstatistics.sumQuantity()はOptional<HKQuantity>型なのでアンラップして値(一日の歩数データの合計)を取り出す
+                //statistics.sumQuantity()をアンラップしてその日の歩数データがあればself.stepsに代入する
+                if let sum = statistics.sumQuantity(){
+                    //タスクの遅延追加（asyncAfter） 設定時間経過後にタスクが追加される。
+                    //DispatchQueue.main.asyncでメインスレッドですぐに非同期で実行されますが、
+                    //これをDispatchQueue.main.asyncAfter(deadline: .now() + 1.0)にすることで1秒後に歩数データの取得を実行する事が出来る。
+                    //DispatchQueueとはGCD（Grand Central Dispatch）の一部で、適切な優先度や実行スレッドを決めて、タスクを実行する仕組みです。
+                    //歩数を0にしてから1秒後に歩数の取得処理を行う
+                    //@Publishedの変数を更新するときはメインスレッドで更新する必要がある
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
                         //サンプルデータはquantity.doubleValueで取り出し、単位を指定して取得する。
                         //単位：歩数の場合HKUnit.count()と指定する。歩行距離の場合：HKUnit(from: "m/s")といった単位を指定する。
                         self.steps = Int(sum.doubleValue(for: HKUnit.count()))
-                        //返された各日(一日)の歩数の合計を出力
-                        print(statistics.sumQuantity()!)
-                    }
-                    //statistics.sumQuantity()をアンラップしてその日の歩数データがない場合の処理
-                    else{
+                    }//DispatchQueue.main.async
+                    //返された各日(一日)の歩数の合計を出力
+                    print(statistics.sumQuantity()!)
+                }
+                //statistics.sumQuantity()をアンラップしてその日の歩数データがない場合の処理
+                else{
+                    //@Publishedの変数を更新するときはメインスレッドで更新する必要がある
+                    DispatchQueue.main.async{
                         self.steps = 0
-                        print("HealthDataVM.stepsはnil")
-                    }
-                })
-            }
-        }//DispatchQueue.main.async
+                    }//DispatchQueue.main.async
+                    print("HealthDataVM.stepsはnil")
+                }
+            })
+        }
         //statisticsUpdateHandlerはバックグラウンドでHealthStoreの監視をして歩数の変更を監視することに変更があれば取得を行うクエリ
         query.statisticsUpdateHandler = {query,results,statisticsCollection, error in
             //statisticsCollectionがnilではない場合は下の処理に入る
@@ -149,15 +151,21 @@ class HealthDataViewModel: ObservableObject{
                 //返されるstatistics.sumQuantity()はOptional<HKQuantity>型なのでアンラップして値(一日の歩数データの合計)を取り出す
                 //statistics.sumQuantity()をアンラップしてその日の歩数データがあればself.HealthDataVM.stepsに代入する
                 if let sum = statistics.sumQuantity(){
-                    //サンプルデータはquantity.doubleValueで取り出し、単位を指定して取得する。
-                    //単位：歩数の場合HKUnit.count()と指定する。歩行距離の場合：HKUnit(from: "m/s")といった単位を指定する。
-                    self.steps = Int(sum.doubleValue(for: HKUnit.count()))
+                    //@Publishedの変数を更新するときはメインスレッドで更新する必要がある
+                    DispatchQueue.main.async{
+                        //サンプルデータはquantity.doubleValueで取り出し、単位を指定して取得する。
+                        //単位：歩数の場合HKUnit.count()と指定する。歩行距離の場合：HKUnit(from: "m/s")といった単位を指定する。
+                        self.steps = Int(sum.doubleValue(for: HKUnit.count()))
+                    }
                     //返された各日(一日)の歩数の合計を出力
                     print(statistics.sumQuantity()!)
                 }
                 //statistics.sumQuantity()をアンラップしてその日の歩数データがない場合の処理
                 else{
-                    self.steps = 0
+                    //@Publishedの変数を更新するときはメインスレッドで更新する必要がある
+                    DispatchQueue.main.async{
+                        self.steps = 0
+                    }
                     print("HealthDataVM.stepsはnil")
                 }
             })
