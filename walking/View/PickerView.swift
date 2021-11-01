@@ -8,20 +8,20 @@
 import SwiftUI
 
 struct PickerView: View {
-    //選択されている歩数を保持するための状態変数（初期値は2000）
+    //歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") private var targetNumOfSteps: Int = 2000
-    
     
     var body: some View {
         VStack{
             Spacer()
-            //テキストには選択された歩数を表示する
+            //選択された歩数を表示する
             Text("\(targetNumOfSteps)歩")
                 .font(.system(size: 45))
-            //tagと@AppStorage("steps_value") var targetNumOfSteps = 2000は連動している
-            //.tagの値がselection: $targetNumOfStepsにセットされて@AppStorage("steps_value") var targetNumOfSteps = 2000にデータを渡す。双方向のデータ連動ができる。
-            //選択された歩数を表示する Text("\(targetNumOfSteps)歩")の中身を変更する
-            Picker(selection: $targetNumOfSteps, label: Text("選択")){
+            //選択された歩数が(selection:$targetNumOfSteps)にセットされて、
+            //@AppStorage("steps_value") var targetNumOfSteps = 2000にデータを渡してデータの永続化がされる。
+            //SettingView,HomeViewでも選択された目標歩数を利用できるようになる。
+            //選択された歩数を表示するText("\(targetNumOfSteps)歩")の中身を変更する
+            Picker(selection:$targetNumOfSteps,label:Text("選択")){
                 Text("2000")
                     .tag(2000)
                 Text("3000")
