@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import Parchment
 
 struct ContentView: View {
     init() {
         //iOS15ではラージタイトルだけでなくすべてのナビゲーションバー・タブバーにscrollEdgeAppearanceが適用されるようになったので、
-        //iOS15未満と同じ挙動にするにはscrollEdgeAppearanceを指定する必要があるようです。
+        //iOS15未満と同じ挙動にするにはscrollEdgeAppearanceを指定する必要があるよう。
         //iOS15ではUITabBarが透明になってしまうことがあるので、iOS15未満と同じ挙動にするにはiOS15+のscrollEdgeAppearanceを指定する。
         //タブバーの外観がおかしい時はナビゲーションバーと同様の対応をする。
         if #available(iOS 15.0,*) {
@@ -19,7 +20,6 @@ struct ContentView: View {
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }
     }
-    
     var body: some View {
         TabView{
             //円グラフと目標までの歩数を表示する画面
@@ -27,12 +27,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("ホーム",systemImage:"house.fill")
                 }
-            //週間・月間・年間の歩数と距離を棒グラフで表示する画面
-//            ReportView()//2枚目の子ビュー
-//                .tabItem {
-//                    Label("レポート",systemImage:"chart.bar.fill")
-//                }
-            //アプリのテーマカラーと目標歩数を設定する画面
+            //目標歩数を設定する画面
             SettingView()//3枚目の子ビュー
                 .tabItem {
                     Label("設定",systemImage:"gearshape.fill")

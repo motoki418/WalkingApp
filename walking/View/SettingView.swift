@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SettingView: View {
-    //選択されている歩数を保持するための状態変数（初期値は2000）
+    //歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") private var targetNumOfSteps: Int = 2000
     
     var body: some View {
@@ -20,7 +20,8 @@ struct SettingView: View {
                         .foregroundColor(.keyColor)
                     Text("目標歩数")
                     Spacer()
-                    //PickerViewで設定した歩数を表示する
+                    //PickerViewで設定した目標歩数が
+                    //@AppStorage("steps_Value") var targetNumOfSteps: Int = 2000 に格納されているので表示する
                     Text("\(targetNumOfSteps)歩")
                 }
             }//Form
