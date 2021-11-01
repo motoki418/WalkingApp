@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,8 +16,6 @@
 		363CB93226F837D700DE3865 /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CB93126F837D700DE3865 /* ReportView.swift */; };
 		363CB93526F83B6900DE3865 /* ColorExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CB93426F83B6900DE3865 /* ColorExtention.swift */; };
 		363CB93726F8453A00DE3865 /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CB93626F8453A00DE3865 /* PickerView.swift */; };
-		364E9A2E272F89F000DC3610 /* ReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 364E9A2D272F89F000DC3610 /* ReportViewModel.swift */; };
-		364E9A31272F8A7400DC3610 /* Parchment in Frameworks */ = {isa = PBXBuildFile; productRef = 364E9A30272F8A7400DC3610 /* Parchment */; };
 		3667438526F8AB80006557F2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3667438426F8AB80006557F2 /* HomeView.swift */; };
 		36730FDA2704199C0020F5EC /* HealthDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36730FD92704199C0020F5EC /* HealthDataModel.swift */; };
 		36730FDD270428990020F5EC /* HealthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36730FDC270428990020F5EC /* HealthViewModel.swift */; };
@@ -36,7 +34,6 @@
 		363CB93126F837D700DE3865 /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
 		363CB93426F83B6900DE3865 /* ColorExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtention.swift; sourceTree = "<group>"; };
 		363CB93626F8453A00DE3865 /* PickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerView.swift; sourceTree = "<group>"; };
-		364E9A2D272F89F000DC3610 /* ReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModel.swift; sourceTree = "<group>"; };
 		3667438426F8AB80006557F2 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		36730FD92704199C0020F5EC /* HealthDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataModel.swift; sourceTree = "<group>"; };
 		36730FDC270428990020F5EC /* HealthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthViewModel.swift; sourceTree = "<group>"; };
@@ -48,7 +45,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				362DE5B126FB430A009B9294 /* HealthKit.framework in Frameworks */,
-				364E9A31272F8A7400DC3610 /* Parchment in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,7 +124,6 @@
 			isa = PBXGroup;
 			children = (
 				36730FDC270428990020F5EC /* HealthViewModel.swift */,
-				364E9A2D272F89F000DC3610 /* ReportViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -150,7 +145,6 @@
 			);
 			name = walking;
 			packageProductDependencies = (
-				364E9A30272F8A7400DC3610 /* Parchment */,
 			);
 			productName = walking;
 			productReference = 363CB90226F7560100DE3865 /* walking.app */;
@@ -181,7 +175,6 @@
 			);
 			mainGroup = 363CB8F926F7560100DE3865;
 			packageReferences = (
-				364E9A2F272F8A7400DC3610 /* XCRemoteSwiftPackageReference "Parchment" */,
 			);
 			productRefGroup = 363CB90326F7560100DE3865 /* Products */;
 			projectDirPath = "";
@@ -213,7 +206,6 @@
 				36730FDD270428990020F5EC /* HealthViewModel.swift in Sources */,
 				36730FDA2704199C0020F5EC /* HealthDataModel.swift in Sources */,
 				3667438526F8AB80006557F2 /* HomeView.swift in Sources */,
-				364E9A2E272F89F000DC3610 /* ReportViewModel.swift in Sources */,
 				363CB90826F7560100DE3865 /* ContentView.swift in Sources */,
 				363CB93726F8453A00DE3865 /* PickerView.swift in Sources */,
 				363CB93526F83B6900DE3865 /* ColorExtention.swift in Sources */,
@@ -417,25 +409,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		364E9A2F272F8A7400DC3610 /* XCRemoteSwiftPackageReference "Parchment" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/rechsteiner/Parchment";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		364E9A30272F8A7400DC3610 /* Parchment */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 364E9A2F272F8A7400DC3610 /* XCRemoteSwiftPackageReference "Parchment" */;
-			productName = Parchment;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 363CB8FA26F7560100DE3865 /* Project object */;
 }
