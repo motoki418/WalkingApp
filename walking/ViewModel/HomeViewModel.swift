@@ -8,19 +8,7 @@
 import SwiftUI
 import HealthKit
 
-class HealthDataViewModel: ObservableObject{
-    init() {
-        //iOS15ではラージタイトルだけでなくすべてのナビゲーションバー・タブバーにscrollEdgeAppearanceが適用されるようになったので、
-        //iOS15未満と同じ挙動にするにはscrollEdgeAppearanceを指定する必要があるよう。
-        //iOS15ではUITabBarが透明になってしまうことがあるので、iOS15未満と同じ挙動にするにはiOS15+のscrollEdgeAppearanceを指定する。
-        //タブバーの外観がおかしい時はナビゲーションバーと同様の対応をする。
-        if #available(iOS 15.0,*) {
-            let appearance = UITabBarAppearance()
-            appearance.shadowColor = UIColor(Color.keyColor)
-            UITabBar.appearance().scrollEdgeAppearance = appearance
-        }
-    }
-    
+class HomeViewModel: ObservableObject{
     //HealthKitで管理される保存領域をHealthStoreという
     //HKHealthStoreのインスタンス生成
     //ヘルスケアのデバイスデータとのやりとりはほぼ全てHKHealthStore経由で行う
@@ -61,9 +49,6 @@ class HealthDataViewModel: ObservableObject{
         case month = "月間"
         case year = "年間"
     }
-    
-    //歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
-    @AppStorage("steps_Value") var targetNumOfSteps: Int = 2000
     
     //00:00:00~23:59:59までを一日分として各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
@@ -175,13 +160,5 @@ class HealthDataViewModel: ObservableObject{
         healthStore.execute(query)
     }//getDailyStepCount()
     
-    //達成率を計算するメソッド
-    func achievementRate() -> String{
-        //Formatterを使用して達成率を百分率で表示する
-        let formatter = NumberFormatter()
-        //数字を百分率にしたStringを得る　％表示
-        formatter.numberStyle = .percent
-        //歩いた歩数を目標歩数で割って達成率を取得　計算結果をリターン
-        return formatter.string(from:NSNumber(value: Double(steps) / Double(targetNumOfSteps)))!
-    }
+   
 }
