@@ -26,7 +26,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("ホーム",systemImage:"house.fill")
                 }
-            //アプリのテーマカラーと目標歩数を設定する画面
+            //目標歩数を設定する画面
             SettingView()//3枚目の子ビュー
                 .tabItem {
                     Label("設定",systemImage:"gearshape.fill")

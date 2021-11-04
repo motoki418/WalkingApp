@@ -18,7 +18,7 @@ struct HomeView: View {
     
     var body: some View {
         //日付、目標までの歩数、現在の歩数、達成率を縦並びでレイアウト
-        VStack(spacing:30){
+        VStack{
             //「今日」ボタンとDatePickerを横並びでレイアウト
             HStack{
                 Button{
@@ -26,6 +26,7 @@ struct HomeView: View {
                     HomeVM.selectionDate = Date()
                 }label:{
                     Text("今日")
+                        .font(.title2)
                 }
                 DatePicker("",selection:$HomeVM.selectionDate,displayedComponents:.date)
                 //プロパティの変更を検知する.onChangeを使用してHomeVMselectionDateに格納されている日付が変更されたら、
@@ -35,18 +36,24 @@ struct HomeView: View {
                     })
                     .labelsHidden()
                     .datePickerStyle(WheelDatePickerStyle())
-                  
                 //ja_JP（日本語＋日本地域）
                     .environment(\.locale,Locale(identifier:"ja_JP"))
             }
             //今日歩いた歩数が目標歩数を上回った時と上回っていない時の処理
             //達成率が100％未満の場合
             if HomeVM.steps < targetNumOfSteps{
-                Text("目標歩数まで\(targetNumOfSteps - HomeVM.steps)歩！")
+                HStack{
+                    Text("目標歩数まで")
+                    Text("\(targetNumOfSteps - HomeVM.steps)")
+                        .foregroundColor(Color.keyColor)
+                    Text("歩！")
+                }
+                .font(.title)
             }
             //達成率が100%以上の場合
             else{
                 Text("今日の目標達成！🎉🎉🎉")
+                    .font(.title)
             }
             //ZStackで２つのCircleを重ねて円形のプログレスバー・進捗表示を実装する
             ZStack{
@@ -73,16 +80,22 @@ struct HomeView: View {
                     .animation(.linear(duration:1))
                 //-90度を指定して円の始まりを一番上に持ってくるための処理。デフォルトだと開始位置が0度で円が右端から始まる
                     .rotationEffect(.degrees(-90))
-                VStack(spacing:20){
-                    Text("今日の歩数は\(HomeVM.steps)歩")
-                    //達成率を計算するメソッドを呼び出して達成率を表示
-                    Text("今日の達成率は\(achievementRate())")
+                //プログレスバーの中に表示するテキスト
+                VStack{
+                    //今日の歩数
+                    Text("\(HomeVM.steps)")
+                    //区切り線で割合を表現
+                    Divider()
+                        .frame(width: 170,height:3)
+                        .background(Color.keyColor)
+                    //目標歩数
+                    Text("\(targetNumOfSteps)")
                 }//VStack
+                .font(.largeTitle)
             }//ZStack
             //プログレスバーの幅と高さを指定
-            .frame(width:300,height:300)
-        }//VStack(spacing:30)
-        .font(.title2)
+            .frame(width:280,height:280)
+        }//VStack
         //スワイプ機能
         //minimumDistance: 100でスワイプした移動量が100に満たない場合はスワイプを検知しない
         .gesture(DragGesture(minimumDistance: 100, coordinateSpace: .local)
@@ -131,16 +144,6 @@ struct HomeView: View {
             }//if HKHealthStore.isHealthDataAvailable()
         }//onAppear
     }//body
-    
-    //達成率を計算するメソッド
-    func achievementRate() -> String{
-        //Formatterを使用して達成率を百分率で表示する
-        let formatter = NumberFormatter()
-        //数字を百分率にしたStringを得る　％表示
-        formatter.numberStyle = .percent
-        //歩いた歩数を目標歩数で割って達成率を取得　計算結果をリターン
-        return formatter.string(from:NSNumber(value: Double(HomeVM.steps) / Double(targetNumOfSteps)))!
-    }
 }//HomeView
 
 struct HomeView_Previews: PreviewProvider {
