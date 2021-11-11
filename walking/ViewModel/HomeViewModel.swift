@@ -27,6 +27,7 @@ class HomeViewModel: ObservableObject{
     @Published var steps: Int = 0
     
     //選択した日付を保持する状態変数
+    //HomeView経由で、HomeViewHeaderとHomeViewBodyに日付が変更したことを配信する
     @Published var selectionDate: Date = Date() {
         //selectionDateの値変更前
         willSet{
@@ -148,6 +149,4 @@ class HomeViewModel: ObservableObject{
         //提供されたクエリの実行を開始します。
         healthStore.execute(query)
     }//getDailyStepCount()
-    
-    
 }

@@ -1,18 +1,16 @@
 //
-//  Tomorrow.swift
+//  HomeViewBody.swift.swift
 //  walking
 //
-//  Created by nakamura motoki on 2021/11/04.
+//  Created by nakamura motoki on 2021/11/07.
 //
-
 
 import SwiftUI
 import HealthKit
 
-struct Tomorrow: View {
-    //HealthDataViewModelを参照する状態変数
-    //これでViewがViewModelのデータを監視できるようになる
-    @ObservedObject var HomeVM: HomeViewModel = HomeViewModel()
+struct HomeViewBody: View {
+    //HomeView経由でHomeViewModelを監視する
+    @ObservedObject var HomeVM: HomeViewModel
     
     //歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
     @AppStorage("steps_Value") private var targetNumOfSteps: Int = 2000
@@ -69,13 +67,7 @@ struct Tomorrow: View {
             //プログレスバーの幅と高さを指定
             .frame(width:300,height:300)
         }//VStack(spacing:30)
-        .onAppear{
-            //リクエストが承認されたので一日ごとの合計歩数を取得するメソッドを呼び出す
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                HomeVM.selectionDate = HomeVM.calendar.date(byAdding:DateComponents(day:1),to:HomeVM.selectionDate)!
-                HomeVM.getDailyStepCount()
-            }
-        }//onAppear
+        .font(.title2)
     }//body
     //達成率を計算するメソッド
     func achievementRate() -> String{
@@ -85,11 +77,5 @@ struct Tomorrow: View {
         formatter.numberStyle = .percent
         //歩いた歩数を目標歩数で割って達成率を取得　計算結果をリターン
         return formatter.string(from:NSNumber(value: Double(HomeVM.steps) / Double(targetNumOfSteps)))!
-    }
-}//HomeView
-
-struct Tomorrow_Previews: PreviewProvider {
-    static var previews: some View {
-        Today()
-    }
-}
+    }//achievementRate()
+}//HomeViewBody
