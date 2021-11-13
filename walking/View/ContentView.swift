@@ -28,7 +28,7 @@ struct ContentView: View {
                     Label("ホーム",systemImage:"house.fill")
                 }
             //目標歩数を設定する画面
-            SettingView()//3枚目の子ビュー
+            SettingView()//2枚目の子ビュー
                 .tabItem {
                     Label("設定",systemImage:"gearshape.fill")
                 }
@@ -47,7 +47,6 @@ struct ContentView: View {
 //HKQuantityType →　HKQuantitySample、
 //HKCategoryType　→　HKCategorySample
 //のように表され、クラスの継承関係は以下のようになっています。
-
 //HKObjectType/HKObjectがルートクラスであり、データを作成したアプリやデバイスの情報やメタデータなどを持っています。
 //そしてそのサブクラスにHKSampleType/HKSampleがあり、これはデータを記録した日時などを持っています。
 //そして最後に具体的なデータを表すHKQuantityType/HKQuantitySample、HKCategoryType/HKCategorySampleなどがあり、それぞれに適したデータを持っている、というような階層になっています。

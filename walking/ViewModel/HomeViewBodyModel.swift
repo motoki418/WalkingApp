@@ -8,7 +8,7 @@
 import SwiftUI
 import HealthKit
 
-class HomeViewModel: ObservableObject{
+class HomeViewBodyModel: ObservableObject{
     //HealthKitで管理される保存領域をHealthStoreという
     //HKHealthStoreのインスタンス生成
     //ヘルスケアのデバイスデータとのやりとりはほぼ全てHKHealthStore経由で行う
@@ -21,25 +21,25 @@ class HomeViewModel: ObservableObject{
     let readTypes = HKObjectType.quantityType(forIdentifier: .stepCount)!
     
     //日時計算クラスCalenderのインスタンスを生成
-    let calendar: Calendar = Calendar(identifier: .gregorian)
-    
-    //歩数を格納する状態変数
-    @Published var steps: Int = 0
+    private let calendar: Calendar = Calendar(identifier: .gregorian)
     
     //選択した日付を保持する状態変数
     //HomeView経由で、HomeViewHeaderとHomeViewBodyに日付が変更したことを配信する
-    @Published var selectionDate: Date = Date() {
+    var selectionDate: Date = Date(){
         //selectionDateの値変更前
         willSet{
             print("willset\(selectionDate)")
         }
-        //selectionDateの値変更後
+        //selectionDateの値変更後に歩数を取得するgetDailyStepCount()を呼び出し
         didSet {
-            //getDailyStepCount()
+            getDailyStepCount()
             print("didset\(selectionDate)")
         }
     }
-   
+    
+    //歩数を格納する状態変数
+    @Published var steps: Int = 0
+    
     //00:00:00~23:59:59までを一日分として各日の合計歩数を取得するメソッド
     func getDailyStepCount(){
         //スワイプした時に日付が変わったことをわかりやすくするために取得した歩数を0にしてプログレスバーを再レンダリングする
@@ -133,7 +133,7 @@ class HomeViewModel: ObservableObject{
                         self.steps = Int(sum.doubleValue(for: HKUnit.count()))
                     }
                     //返された各日(一日)の歩数の合計を出力
-                    print(statistics.sumQuantity()!)
+                    //                    print(statistics.sumQuantity()!)
                 }
                 //statistics.sumQuantity()をアンラップしてその日の歩数データがない場合の処理
                 else{
@@ -141,7 +141,7 @@ class HomeViewModel: ObservableObject{
                     DispatchQueue.main.async{
                         self.steps = 0
                     }
-                   
+                    
                 }
             })
         }

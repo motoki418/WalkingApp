@@ -6,64 +6,47 @@
 //
 
 import SwiftUI
-import HealthKit
 
 struct HomeView: View {
-    //HealthDataViewModelを参照する状態変数
-    //これでViewがViewModelのデータを監視できるようになる
-    //HomeViewModelの @Published var stepsと @Published var selectionDateの
-    //2つの変数の状態を受信する
-    @ObservedObject var HomeVM: HomeViewModel = HomeViewModel()
+    //選択した日付を保持する状態変数
+    //子ビューのHomeViewHeaderと双方向にデータ連動する
+    @State private var selectionDate: Date = Date()
     
     //この変数で表示位置を指定できる(中央はtag(1)なので1)
     @State private var selection = 1
     
+    //日時計算クラスCalenderのインスタンスを生成
+    private let calendar: Calendar = Calendar(identifier: .gregorian)
+    
     var body: some View {
         //子ビューのHomeViewHeaderとHomeViewBodyを表示する
         VStack{
-            //HomeVMを親ViewのHomeViewから、子ViewのHomeViewHeaderに引数として渡して
-            //子ViewでもHomeViewModelのデータを受信して、Viewの更新がされるようにする
-            HomeViewHeader(HomeVM: HomeVM)
+            //HomeViewHeaderを表示する時に引数としてselectionDate指定して日付を渡す
+            //HomeViewHeaderでも日付を変更するので、変更した日付を受け取れるように$を付与してバインディングする
+            HomeViewHeader(selectionDate:$selectionDate)
             //TabViewのPageTabViewStyleで予め3画面分(前日・当日・翌日)を用意する
             TabView(selection: $selection){
-                //HomeVMを親ViewのHomeViewから、子ViewのHomeViewBodyに引数として渡す
-                HomeViewBody(HomeVM: HomeVM)
+                //HomeViewBodyを表示する時に引数としてselectionDateを指定して日付を渡す
+                //HomeViewBodyでは日付を変更しないので、$を付与しない。
+                HomeViewBody(selectionDate: selectionDate)
                     .tag(0)
-                HomeViewBody(HomeVM: HomeVM)
+                HomeViewBody(selectionDate: selectionDate)
                     .tag(1)
-                HomeViewBody(HomeVM: HomeVM)
+                HomeViewBody(selectionDate: selectionDate)
                     .tag(2)
             }//TabView
-            .onAppear{
-                //HealthKitが自分の現在のデバイスで利用可能かを確認する
-                //HKHealthStore.isHealthDataAvailable() → HealthKitが利用できるかのメソッド
-                if HKHealthStore.isHealthDataAvailable(){
-                    //アプリからデバイスにデータへのアクセス権限をリクエスト
-                    //toShareが書き込み、readが読み込み
-                    print("承認されました")
-                    HomeVM.healthStore.requestAuthorization(toShare:[],read:[HomeVM.readTypes]){success, error in
-                        if success{
-                            //リクエストが承認されたので一日ごとの合計歩数を取得するメソッドを呼び出す
-                            HomeVM.getDailyStepCount()
-                        }
-                    }//requestAuthorization
-                }//if HKHealthStore.isHealthDataAvailable()
-            }//onAppear
             //表示位置を管理するselectionが変わったとき tag番号が変わった時の処理
             .onChange(of: selection){ newValue in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){
                     print("newValue = \(newValue)")
-                    //右にスワイプしてnewValueが0になったら、selectionの値を1に戻して3画面の真ん中に表示する
+                    selection = 1
+                    //右にスワイプしてnewValueが0になったら表示する日付を前日にする
                     if newValue == 0{
-                        selection = 1
-                        //表示する日付を前日にする処理
-                        HomeVM.selectionDate = HomeVM.calendar.date(byAdding: DateComponents(day:-1),to:HomeVM.selectionDate)!
+                        selectionDate = calendar.date(byAdding: DateComponents(day:-1),to:selectionDate)!
                     }
-                    //左にスワイプしてnewValueが1になったら、selectionの値を1に戻して3画面の真ん中に表示する
+                    //左にスワイプしてnewValueが2になったら表示する日付を翌日にする
                     else if newValue == 2{
-                        selection = 1
-                        //表示する日付を翌日にする処理
-                        HomeVM.selectionDate = HomeVM.calendar.date(byAdding: DateComponents(day:1),to:HomeVM.selectionDate)!
+                        selectionDate = calendar.date(byAdding: DateComponents(day:1),to:selectionDate)!
                     }
                 }// DispatchQueue.main.asyncAfter
             }//onChange
