@@ -25,7 +25,7 @@ struct HomeViewBody: View {
     
     var body: some View {
         //日付、目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
-        VStack(spacing:100){
+        VStack(spacing:50){
             //今日歩いた歩数が目標歩数を上回った時と上回っていない時の処理
             //達成率が100％未満の場合
             if HomeBodyVM.steps < targetNumOfSteps{
@@ -70,15 +70,16 @@ struct HomeViewBody: View {
                 //プログレスバーの中に表示するテキスト
                 VStack{
                     //今日の歩数
-                    Text("\(HomeBodyVM.steps)")
+                    Text("現在   \(HomeBodyVM.steps)")
                     //区切り線で割合を表現
                     Divider()
                         .frame(width: 170,height:4)
                         .background(Color.keyColor)
                     //目標歩数
-                    Text("\(targetNumOfSteps)")
+                    Text("目標   \(targetNumOfSteps)")
+                    
                 }//VStack
-                .font(.largeTitle)
+                .font(.title)
             }//ZStack
             //プログレスバーの幅と高さを指定
             .frame(width:300,height:300)
