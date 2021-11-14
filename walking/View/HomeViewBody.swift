@@ -25,14 +25,23 @@ struct HomeViewBody: View {
     
     var body: some View {
         //日付、目標までの歩数、現在の歩数、目標歩数までの割合、移動距離を縦並びでレイアウトする
-        VStack(spacing:30){
-            Text("日付は\(HomeBodyVM.selectionDate, style:.date)")
-            //ja_JP（日本語＋日本地域）
-                .environment(\.locale,Locale(identifier:"ja_JP"))
-            //PickerViewで設定した目標歩数がHealthDataViewModelの
-            //@AppStorage("HomeBodyVM.steps_Value") var targetNumOfHomeBodyVM.steps: Int = 2000 に格納されているので表示する
-            Text("目標歩数は\(targetNumOfSteps)歩")
-            Text("今日の歩数は\(HomeBodyVM.steps)歩")
+        VStack(spacing:100){
+            //今日歩いた歩数が目標歩数を上回った時と上回っていない時の処理
+            //達成率が100％未満の場合
+            if HomeBodyVM.steps < targetNumOfSteps{
+                HStack{
+                    Text("目標歩数まで")
+                    Text("\(targetNumOfSteps - HomeBodyVM.steps)")
+                        .foregroundColor(Color.keyColor)
+                    Text("歩！")
+                }
+                .font(.title)
+            }
+            //達成率が100%以上の場合
+            else{
+                Text("今日の目標達成！🎉🎉🎉")
+                    .font(.title)
+            }
             //ZStackで２つのCircleを重ねて円形のプログレスバー・進捗表示を実装する
             ZStack{
                 //背景用のCircle
@@ -58,24 +67,22 @@ struct HomeViewBody: View {
                     .animation(.linear(duration:1))
                 //-90度を指定して円の始まりを一番上に持ってくるための処理。デフォルトだと開始位置が0度で円が右端から始まる
                     .rotationEffect(.degrees(-90))
+                //プログレスバーの中に表示するテキスト
                 VStack{
-                    //達成率を計算するメソッドを呼び出して達成率を表示
-                    Text("今日の達成率は\(achievementRate())")
-                    //今日歩いた歩数が目標歩数を上回った時と上回っていない時の処理
-                    //達成率が100％未満の場合
-                    if HomeBodyVM.steps < targetNumOfSteps{
-                        Text("目標歩数まで\(targetNumOfSteps - HomeBodyVM.steps)歩！")
-                    }
-                    //達成率が100%以上の場合
-                    else{
-                        Text("目標達成！🎉")
-                    }
+                    //今日の歩数
+                    Text("\(HomeBodyVM.steps)")
+                    //区切り線で割合を表現
+                    Divider()
+                        .frame(width: 170,height:4)
+                        .background(Color.keyColor)
+                    //目標歩数
+                    Text("\(targetNumOfSteps)")
                 }//VStack
+                .font(.largeTitle)
             }//ZStack
             //プログレスバーの幅と高さを指定
             .frame(width:300,height:300)
         }//VStack(spacing:30)
-        .font(.title2)
         .onAppear(){
             //HealthKitが自分の現在のデバイスで利用可能かを確認する
             //HKHealthStore.isHealthDataAvailable() → HealthKitが利用できるかのメソッド
@@ -88,8 +95,8 @@ struct HomeViewBody: View {
                         HomeBodyVM.getDailyStepCount()
                     }
                 }//requestAuthorization
-            }//if HKHea
-        }
+            }
+        }//onAppear
     }//body
     //達成率を計算するメソッド
     func achievementRate() -> String{
