@@ -26,7 +26,6 @@ https://user-images.githubusercontent.com/78193597/142972810-c5fb4fe8-500a-4177-
 
 今回はこのような設計図を作成し、MVVMで機能ごとにファイルを分割して作成しました。
 
-<img width="1357" alt="スクリーンショット 2021-11-23 17 07 54" src="https://user-images.githubusercontent.com/78193597/142989110-960a8083-4bfe-4216-96db-65462fb07454.png">
 
 | ファイル名 | 解説・概要 |
 | ------------- | ------------- |
