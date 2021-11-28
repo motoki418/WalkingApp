@@ -24,9 +24,6 @@ https://user-images.githubusercontent.com/78193597/142972810-c5fb4fe8-500a-4177-
 
 ## 5. アプリの設計について
 
-今回はこのような設計図を作成し、MVVMで機能ごとにファイルを分割して作成しました。
-
-
 | ファイル名 | 解説・概要 |
 | ------------- | ------------- |
 | ContentView.swift | TabViewを使用して、HomeView・SettingViewの2画面を管理するView  |
@@ -36,7 +33,6 @@ https://user-images.githubusercontent.com/78193597/142972810-c5fb4fe8-500a-4177-
 | SettingView.swift  |  設定画面のレイアウトを作成するView |
 | PickerView.swift  |  アプリ内で表示する目標歩数をPickerで設定するView |
 | HomeViewBodyModel.swift  | HomeViewBodyからユーザー操作を受け取り、HealthStoreから歩数データを取得するクラス |
-| HealthDataModel.swift  |  HealthStore から取得した歩数データを格納するための構造体 |
 
 ## 6. アプリでのポイント
 
