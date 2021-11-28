@@ -15,14 +15,23 @@ https://user-images.githubusercontent.com/78193597/142972810-c5fb4fe8-500a-4177-
 ホーム画面では、右にスワイプすると前日、左にスワイプすると翌日の日付に変更し、日付が変更されると画面に表示している円グラフの再描画が行われ、一日でどれだけ歩いたのかが分かりやすいようになっています。
 画面上部のDatePickerで日付を選択すると、選択した日付の歩数の表示が行われるようにしています。
 
+<img width="320" alt="Simulator Screen Shot - iPhone 13 Pro Max - 2021-11-28 at 12 31 30" src="https://user-images.githubusercontent.com/78193597/143727815-2bc881ce-9e52-4e66-b14e-cf972cd33c9c.png">
+
 ### 設定画面
 設定画面ではNavigationViewで画面レイアウトを作成して、NavigationLinkで歩数設定画面に遷移できるようにしています。
 歩数設定画面では、Pickerを使用して歩数を選択できるようにし、選択した歩数はUserDefalutsを利用してデータの永続化を行い、ホーム画面でも目標歩数として表示できるようにしています。
+
+| 設定画面 | 歩数設定画面 |
+| --- | --- |
+| !<img width="320" alt="Simulator Screen Shot - iPhone 13 Pro Max - 2021-11-28 at 12 31 38" src="https://user-images.githubusercontent.com/78193597/143728023-fc00ca95-5d29-454a-969b-5bf5ceec17bc.png"> | <img width="320" alt="Simulator Screen Shot - iPhone 13 Pro Max - 2021-11-28 at 12 31 34" src="https://user-images.githubusercontent.com/78193597/143728019-e6ae1e83-1eb5-421f-a229-8c5167c5c841.png"> |
  
 ## 4. ダウンロードリンク
 [シンプル歩数計 - SimpleWalking](https://apps.apple.com/jp/app/simplewalking/id1590245946)
 
 ## 5. アプリの設計について
+<img width="1278" alt="スクリーンショット 2021-11-28 12 21 04" src="https://user-images.githubusercontent.com/78193597/143727559-d8cb684b-ebef-414a-8ada-48f53312c6a9.png">
+
+
 
 | ファイル名 | 解説・概要 |
 | ------------- | ------------- |
