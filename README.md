@@ -40,6 +40,7 @@ https://user-images.githubusercontent.com/78193597/142972810-c5fb4fe8-500a-4177-
 | SettingView.swift  |  設定画面のレイアウトを作成するView |
 | PickerView.swift  |  アプリ内で表示する目標歩数をPickerで設定するView |
 | HomeViewBodyModel.swift  | HomeViewBodyからユーザー操作を受け取り、HealthStoreから歩数データを取得するクラス |
+| HealthDataModel.swift  |   |
 
 ## 6. アプリを作った時にこだわったポイント
 
