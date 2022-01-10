@@ -98,7 +98,7 @@ var body: some View {
 ```
 <img width="529" alt="スクリーンショット 2021-11-27 8 22 33" src="https://user-images.githubusercontent.com/78193597/143660823-f0d52cb4-b7ba-4e25-a64b-315ababeca5d.png">
 
-[<img width="868" alt="スクリーンショット 2021-12-09 9 36 53" src="https://user-images.githubusercontent.com/78193597/145313673-c6f6f14e-aa63-4155-aa29-c71670865dc5.png">](https://speakerdeck.com/motoki418/sinhurubu-shu-ji-homuhua-mian-dong-kinituitefalse-0cd75dc2-2616-48de-b9d9-204d753e2715)
+[<img width="868" alt="スクリーンショット 2021-12-09 9 36 53" src="https://user-images.githubusercontent.com/78193597/145313673-c6f6f14e-aa63-4155-aa29-c71670865dc5.png">](https://speakerdeck.com/motoki418/sinhurubu-shu-ji-homuhua-mian-dong-kinituite)
 
 ### ポイント2.HealthKitから歩数データを取得して表示
 
