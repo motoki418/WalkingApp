@@ -101,7 +101,7 @@ var body: some View {
 
 ### ポイント2.HealthKitから歩数データを取得して表示
 
-HomeBodyViewModelでは歩数の取得を行うメソッドを作成しています。
+HomeViewBodyModelでは歩数の取得を行うメソッドを作成しています。
 このメソッドは次のケースで実行されます。
 - ホーム画面で左右にスワイプした時
 - DatePickerで日付を選択した時
