@@ -10,14 +10,14 @@ import HealthKit
 
 struct HomeViewBody: View {
     //HomeViewBodyModelを監視する
-    @ObservedObject private var HomeBodyVM: HomeViewBodyModel = HomeViewBodyModel()
+    @ObservedObject private var HealthDM: HealthDataModel
     
     //日付をHomeViewからもらいつつ、HomeBodyViewModelのselectionDateにセットしてあげることで、データの再取得が行われてグラフが再描画される。
     //HomeView → HomeViewBody → HomeViewBodyModelの順でselectionDateを渡す
     //initで初期化する
     init(selectionDate: Date){
-        HomeBodyVM = HomeViewBodyModel()
-        HomeBodyVM.selectionDate = selectionDate
+        HealthDM = HealthDataModel()
+        HealthDM.selectionDate = selectionDate
     }
     
     //歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
@@ -28,10 +28,10 @@ struct HomeViewBody: View {
         VStack(spacing:50){
             //今日歩いた歩数が目標歩数を上回った時と上回っていない時の処理
             //達成率が100％未満の場合
-            if HomeBodyVM.steps < targetNumOfSteps{
+            if HealthDM.steps < targetNumOfSteps{
                 HStack{
                     Text("目標歩数まで")
-                    Text("\(targetNumOfSteps - HomeBodyVM.steps)")
+                    Text("\(targetNumOfSteps - HealthDM.steps)")
                         .foregroundColor(Color.keyColor)
                     Text("歩！")
                 }
@@ -59,7 +59,7 @@ struct HomeViewBody: View {
                 //引数toの数値を変更ことで進捗率を変更することが出来る
                 //今回は引数toに今日歩いた歩数を目標歩数で割った達成率を設定することで、その達成率に応じて進捗を示すCircleの表示を行う
                 //Int型で割り算すると結果はInt型になり小数点以下は切り捨てられてしまうのでHomeBodyVM.stepsとtargetNumOfHomeBodyVM.stepsをDouble型に変換して計算を行う
-                    .trim(from:0.0,to:CGFloat(min(Double(HomeBodyVM.steps) / Double(targetNumOfSteps),1.0)))
+                    .trim(from:0.0,to:CGFloat(min(Double(HealthDM.steps) / Double(targetNumOfSteps),1.0)))
                 //線の色と線の幅と線の先端のスタイルを指定 .roundで先端を丸めることが出来る
                     .stroke(Color.keyColor,style:StrokeStyle(lineWidth:20,lineCap:.round))
                 //アニメーションの設定
@@ -70,7 +70,7 @@ struct HomeViewBody: View {
                 //プログレスバーの中に表示するテキスト
                 VStack{
                     //今日の歩数
-                    Text("現在   \(HomeBodyVM.steps)")
+                    Text("現在   \(HealthDM.steps)")
                     //区切り線で割合を表現
                     Divider()
                         .frame(width: 170,height:4)
@@ -90,10 +90,10 @@ struct HomeViewBody: View {
             if HKHealthStore.isHealthDataAvailable(){
                 //アプリからデバイスにデータへのアクセス権限をリクエスト
                 //toShareが書き込み、readが読み込み
-                HomeBodyVM.healthStore.requestAuthorization(toShare:[],read:[HomeBodyVM.readTypes]){success, error in
+                HealthDM.healthStore.requestAuthorization(toShare:[],read:[HealthDM.readTypes]){success, error in
                     if success{
                         //リクエストが承認されたので一日ごとの合計歩数を取得するメソッドを呼び出す
-                        HomeBodyVM.getDailyStepCount()
+                        HealthDM.getDailyStepCount()
                     }
                 }//requestAuthorization
             }
@@ -106,6 +106,6 @@ struct HomeViewBody: View {
         //数字を百分率にしたStringを得る　％表示
         formatter.numberStyle = .percent
         //歩いた歩数を目標歩数で割って達成率を取得　計算結果をリターン
-        return formatter.string(from:NSNumber(value: Double(HomeBodyVM.steps) / Double(targetNumOfSteps)))!
+        return formatter.string(from:NSNumber(value: Double(HealthDM.steps) / Double(targetNumOfSteps)))!
     }//achievementRate()
 }//HomeViewBody
