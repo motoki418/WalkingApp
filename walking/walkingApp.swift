@@ -9,8 +9,6 @@ import SwiftUI
 
 @main
 struct walkingApp: App {
-    
-    
     var body: some Scene {
         WindowGroup {
             ContentView()

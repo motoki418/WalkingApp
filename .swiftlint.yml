@@ -1,0 +1,16 @@
+# デフォルト有効のルールのうち、無効にするもの
+disabled_rules:
+# マルチトレイリングクロージャの利用を許可するため
+- multiple_closures_with_trailing_closure
+# コードの記載のない改行を許可するため
+- trailing_whitespace
+# force_castは場合によっては使用するため
+- force_cast
+# identifier_name 変数名にアンスコ使いたい
+# 3文字~41文字以内の制限を外すため
+- identifier_name
+# タイプ名(型名)英数字のみ、大文字で始まり、
+# 長さは3〜40文字含める制限を外す
+- type_name
+# 関数内の行数制限を外す
+- function_body_length
