@@ -38,7 +38,7 @@ https://user-images.githubusercontent.com/78193597/142972810-c5fb4fe8-500a-4177-
 | HomeViewBody.swift  | ホーム画面で表示する歩数・円グラフ・達成率の表示を担当するHomeViewの子View|
 | SettingView.swift  |  設定画面のレイアウトを作成するView |
 | PickerView.swift  |  アプリ内で表示する目標歩数をPickerで設定するView |
-| HomeViewBodyModel.swift  | HomeViewBodyからユーザー操作を受け取り、HealthStoreから歩数データを取得するクラス |
+| HealthDataModel.swift  | HealthStoreから歩数データを取得するし、Viewにデータを配信するクラス |
 
 ## 6. アプリを作った時にこだわったポイント
 
