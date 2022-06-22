@@ -27,8 +27,7 @@ https://user-images.githubusercontent.com/78193597/142972810-c5fb4fe8-500a-4177-
 [シンプル歩数計 - SimpleWalking](https://apps.apple.com/jp/app/simplewalking/id1590245946)
 
 ## 5. アプリの設計について
-<img width="1278" alt="スクリーンショット 2021-11-28 12 21 04" src="https://user-images.githubusercontent.com/78193597/143727559-d8cb684b-ebef-414a-8ada-48f53312c6a9.png">
-
+<img width="1278" alt="スクリーンショット 2022-06-22 10 44 45" src="https://user-images.githubusercontent.com/78193597/174925555-e967c332-d35e-4b7a-a004-fab9464f1ad5.png">
 
 | ファイル名 | 解説・概要 |
 | ------------- | ------------- |
@@ -101,7 +100,7 @@ var body: some View {
 
 ### ポイント2.HealthKitから歩数データを取得して表示
 
-HomeViewBodyModelでは歩数の取得を行うメソッドを作成しています。
+HealthDataModelでは歩数の取得を行うメソッドを作成しています。
 このメソッドは次のケースで実行されます。
 - ホーム画面で左右にスワイプした時
 - DatePickerで日付を選択した時
@@ -158,9 +157,9 @@ HomeViewBodyModelでは歩数の取得を行うメソッドを作成していま
 <img width="445" alt="スクリーンショット 2021-11-27 8 47 52" src="https://user-images.githubusercontent.com/78193597/143661479-034a794b-30a0-4008-a431-7963ca674aba.png">
 
 ## 7. 開発環境
-- Xcode13.1
-- macOS Monterey 12.0.1
-- iOS15.1.1
+- Xcode13.4.1
+- macOS Monterey 12.4
+- iOS15.5
 
 ## 8. 作成者
 https://twitter.com/motoki0418
