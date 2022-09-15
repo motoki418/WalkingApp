@@ -8,19 +8,15 @@
 import SwiftUI
 
 struct PickerView: View {
-    // 歩数をUserDefalutsから読み込んで保持するための状態変数（初期値は2000）
+    
     @AppStorage("steps_Value") private var targetNumOfSteps: Int = 2000
     
     var body: some View {
         VStack {
             Spacer()
-            // 選択された歩数を表示する
             Text("\(targetNumOfSteps)歩")
                 .font(.system(size: 45))
-            // 選択された歩数が(selection:$HealthDataVM.targetNumOfSteps)にセットされて、
-            // HealthDataViewModelの @AppStorage("steps_value") var targetNumOfSteps = 2000にデータを渡してデータの永続化がされる。
-            // SettingViewやHomeViewでも選択された目標歩数を利用できるようになる。
-            // 選択された歩数を表示するText("\(HealthDataVM.targetNumOfSteps)歩")の中身を変更する
+            
             Picker(selection: $targetNumOfSteps, label: Text("選択")) {
                 Text("2000")
                     .tag(2000)
@@ -42,15 +38,12 @@ struct PickerView: View {
                     .tag(10000)
                 Text("20000")
                     .tag(20000)
-            }// Pickerここまで
-            // Pickerのスタイルを指定
-            // Xocde12まではデフォルトがWheelPickerStyle()だったが、
-            // Xcode13からMenuPickerStyle()がデフォルト設定に変更されている
+            }
             .pickerStyle(WheelPickerStyle())
             Spacer()
-        }// VStackここまで
-    }// bodyここまで
-}// PickerViewここまで
+        }
+    }
+}
 
 struct PickerView_Previews: PreviewProvider {
     static var previews: some View {
