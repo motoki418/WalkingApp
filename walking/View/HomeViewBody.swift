@@ -17,18 +17,13 @@ struct HomeViewBody: View {
         HealthDM.selectionDate = selectionDate
     }
     
-    @AppStorage("steps_Value") private var targetNumOfSteps: Int = 2000
+    @AppStorage("steps_Value") private var targetNumOfSteps = 2000
     
     var body: some View {
         VStack(spacing: 50) {
             if HealthDM.steps < targetNumOfSteps {
-                HStack {
-                    Text("目標歩数まで")
-                    Text("\(targetNumOfSteps - HealthDM.steps)")
-                        .foregroundColor(Color.keyColor)
-                    Text("歩！")
-                }
-                .font(.title)
+                Text("目標歩数まで \(targetNumOfSteps - HealthDM.steps) 歩！")
+                    .font(.title)
             } else {
                 Text("今日の目標達成！🎉🎉🎉")
                     .font(.title)
@@ -54,9 +49,9 @@ struct HomeViewBody: View {
             }
             .frame(width: 300, height: 300)
         }
-        .onAppear() {
+        .onAppear {
             if HKHealthStore.isHealthDataAvailable() {
-                HealthDM.healthStore.requestAuthorization(toShare: [], read: [HealthDM.readTypes]) { success, error in
+                HealthDM.healthStore.requestAuthorization(toShare: [], read: [HealthDM.readTypes]) { success, _ in
                     if success {
                         HealthDM.getDailyStepCount()
                     }

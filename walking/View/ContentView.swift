@@ -8,15 +8,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    init() {
-        if #available(iOS 15.0, *) {
-            let appearance = UITabBarAppearance()
-            appearance.shadowColor = UIColor(Color.keyColor)
-            UITabBar.appearance().scrollEdgeAppearance = appearance
-        }
-    }
-    
     var body: some View {
         TabView {
             HomeView()
@@ -34,6 +25,6 @@ struct ContentView: View {
                     Label("設定", systemImage: "gearshape.fill")
                 }
         }
-        .accentColor(Color.keyColor)
+        .accentColor(.keyColor)
     }
 }

@@ -10,5 +10,5 @@ import SwiftUI
 
 extension Color {
     static let keyColor = Color("blue")
-    static let backgroundColor = Color("background")
+    static let fontColor = Color("fontColor")
 }

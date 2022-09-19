@@ -9,11 +9,11 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @State private var selectionDate: Date = Date()
+    @State private var selectionDate = Date()
     
     @State private var selection = 1
     
-    private let calendar: Calendar = Calendar(identifier: .gregorian)
+    private let calendar = Calendar(identifier: .gregorian)
     
     var body: some View {
         VStack {
@@ -28,7 +28,6 @@ struct HomeView: View {
             }
             .onChange(of: selection) { newValue in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    print("newValue = \(newValue)")
                     selection = 1
                     if newValue == 0 {
                         selectionDate = calendar.date(byAdding: DateComponents(day: -1), to: selectionDate)!

@@ -13,18 +13,17 @@ class HealthDataModel: ObservableObject {
     
     let readTypes = HKObjectType.quantityType(forIdentifier: .stepCount)!
     
-    private let calendar: Calendar = Calendar(identifier: .gregorian)
+    private let calendar = Calendar(identifier: .gregorian)
     
-    var selectionDate: Date = Date() {
+    var selectionDate = Date() {
         willSet {
-            print("willset\(selectionDate)")
         }
         didSet {
             getDailyStepCount()
         }
     }
     
-    @Published var steps: Int = 0
+    @Published var steps = 0
     
     // 00:00:00~23:59:59までを一日分として各日の合計歩数を取得するメソッド
     func getDailyStepCount() {
@@ -56,7 +55,7 @@ class HealthDataModel: ObservableObject {
             
             statisticsCollection.enumerateStatistics(from: startDate!,
                                                      to: self.selectionDate,
-                                                     with: {( statistics, stop) in
+                                                     with: {( statistics, _) in
                 if let sum = statistics.sumQuantity() {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                         self.steps = Int(sum.doubleValue(for: HKUnit.count()))
@@ -71,7 +70,7 @@ class HealthDataModel: ObservableObject {
         query.statisticsUpdateHandler = { query, results, statisticsCollection, error in
             statisticsCollection?.enumerateStatistics(from: startDate!,
                                                       to: self.selectionDate,
-                                                      with: {(statistics, stop) in
+                                                      with: {(statistics, _) in
                 if let sum = statistics.sumQuantity() {
                     DispatchQueue.main.async {
                         self.steps = Int(sum.doubleValue(for: HKUnit.count()))
