@@ -21,24 +21,21 @@ struct ReportView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("\(selectionPeriod.rawValue)")
-            }
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Picker(selection: $selectionPeriod, label: Text("選択")) {
-                        Text("\(period.week.rawValue)")
-                            .tag(period.week)
-                        
-                        Text("\(period.month.rawValue)")
-                            .tag(period.month)
-                        
-                        Text("\(period.year.rawValue)")
-                            .tag(period.year)
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .frame(width: 300)
+                Picker(selection: $selectionPeriod, label: Text("選択")) {
+                    Text("\(period.week.rawValue)")
+                        .tag(period.week)
+                    
+                    Text("\(period.month.rawValue)")
+                        .tag(period.month)
+                    
+                    Text("\(period.year.rawValue)")
+                        .tag(period.year)
                 }
+                .pickerStyle(SegmentedPickerStyle())
+                Spacer()
             }
+            .navigationTitle("歩数")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

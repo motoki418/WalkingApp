@@ -66,3 +66,9 @@ struct HomeViewBody: View {
         return formatter.string(from: NSNumber(value: Double(HealthDM.steps) / Double(targetNumOfSteps)))!
     }
 }
+
+struct HomeViewBody_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeViewBody(selectionDate: Date())
+    }
+}

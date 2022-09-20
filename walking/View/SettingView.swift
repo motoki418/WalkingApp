@@ -27,7 +27,7 @@ struct SettingView: View {
                 }
                 
                 Button {
-                    openURL(URL(string: "https://apps.apple.com/jp/app/if-then%E3%83%97%E3%83%A9%E3%83%B3%E3%83%8B%E3%83%B3%E3%82%B0/id1619599235")!)
+                    openURL(URL(string: "https://apps.apple.com/jp/app/%E3%82%B7%E3%83%B3%E3%83%97%E3%83%AB%E6%AD%A9%E6%95%B0%E8%A8%88-simplewalking/id1590245946")!)
                 }label: {
                     Label("アプリをレビューする", systemImage: "pencil.and.ellipsis.rectangle")
                 }
