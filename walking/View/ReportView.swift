@@ -10,28 +10,24 @@ import HealthKit
 
 struct ReportView: View {
     
-    enum period: String {
+    enum Period: String, CaseIterable {
         case week = "週間"
         case month = "月間"
         case year = "年間"
     }
     
-    @State var selectionPeriod: period = .week
-
+    @State var selectionPeriod: Period = .week
+    
     var body: some View {
         NavigationView {
             VStack {
                 Picker(selection: $selectionPeriod, label: Text("選択")) {
-                    Text("\(period.week.rawValue)")
-                        .tag(period.week)
-                    
-                    Text("\(period.month.rawValue)")
-                        .tag(period.month)
-                    
-                    Text("\(period.year.rawValue)")
-                        .tag(period.year)
+                    ForEach(Period.allCases, id: \.self) { period in
+                        Text("\(period.rawValue)")
+                    }
                 }
                 .pickerStyle(SegmentedPickerStyle())
+                
                 Spacer()
             }
             .navigationTitle("歩数")

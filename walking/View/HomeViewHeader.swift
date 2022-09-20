@@ -13,16 +13,22 @@ struct HomeViewHeader: View {
     
     var body: some View {
         HStack(spacing: 100) {
-            Button {
-                selectionDate = Date()
-            } label: {
-                Text("今日")
-                    .font(.title2)
-            }
+            
+            todayButton
+            
             DatePicker("", selection: $selectionDate, displayedComponents: .date)
                 .labelsHidden()
                 .environment(\.locale, Locale(identifier: "ja_JP"))
         }
     }
+    
+    private var todayButton: some View {
+        Button {
+            selectionDate = Date()
+        } label: {
+            Text("今日")
+                .font(.title2)
+        }
+    }
+    
 }
-

@@ -9,31 +9,29 @@ import SwiftUI
 
 struct PickerView: View {
     
-    @AppStorage("steps_Value") private var targetNumOfSteps = 2000
+    enum TargetNumberOfSteps: Int, CaseIterable {
+        case twoThousand = 2000
+        case threeThousand = 3000
+        case fourThousand = 4000
+        case fiveThousand = 5000
+        case sixThousand = 6000
+        case sevenThousand = 7000
+        case eightThousand = 8000
+        case nineThousand = 9000
+        case tenThousand = 10000
+    }
+    
+    @AppStorage("steps_Value") private var targetNumOfSteps: TargetNumberOfSteps = .twoThousand
     
     var body: some View {
-        Text("\(targetNumOfSteps)歩")
+        Text("\(targetNumOfSteps.rawValue)歩")
             .font(.system(size: 45))
         
         Picker("", selection: $targetNumOfSteps) {
-            Text("2000")
-                .tag(2000)
-            Text("3000")
-                .tag(3000)
-            Text("4000")
-                .tag(4000)
-            Text("5000")
-                .tag(5000)
-            Text("6000")
-                .tag(6000)
-            Text("7000")
-                .tag(7000)
-            Text("8000")
-                .tag(8000)
-            Text("9000")
-                .tag(9000)
-            Text("10000")
-                .tag(10000)
+            ForEach(TargetNumberOfSteps.allCases, id: \.self) { steps in
+                Text("\(steps.rawValue)")
+                    .font(.largeTitle)
+            }
         }
         .pickerStyle(WheelPickerStyle())
     }

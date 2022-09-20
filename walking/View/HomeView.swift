@@ -17,7 +17,9 @@ struct HomeView: View {
     
     var body: some View {
         VStack {
+            
             HomeViewHeader(selectionDate: $selectionDate)
+            
             TabView(selection: $selection) {
                 HomeViewBody(selectionDate: selectionDate)
                     .tag(0)
