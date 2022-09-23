@@ -13,7 +13,7 @@ class HealthDataModel: ObservableObject {
     
     let readTypes = HKObjectType.quantityType(forIdentifier: .stepCount)!
     
-    private let calendar = Calendar(identifier: .gregorian)
+    let calendar = Calendar(identifier: .gregorian)
     
     var selectionDate = Date() {
         willSet {
@@ -24,8 +24,8 @@ class HealthDataModel: ObservableObject {
     }
     
     @Published var steps = 0
-    
-    // 00:00:00~23:59:59までを一日分として各日の合計歩数を取得するメソッド
+        
+    /// 00:00:00~23:59:59までを一日分として、各日の合計歩数をHealthStoreから取得するメソッド
     func getDailyStepCount() {
         DispatchQueue.main.async {
             self.steps = 0

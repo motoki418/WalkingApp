@@ -13,13 +13,13 @@
 		363CB90A26F7560300DE3865 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 363CB90926F7560300DE3865 /* Assets.xcassets */; };
 		363CB90D26F7560300DE3865 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 363CB90C26F7560300DE3865 /* Preview Assets.xcassets */; };
 		363CB93026F837B500DE3865 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CB92F26F837B500DE3865 /* SettingView.swift */; };
-		363CB93226F837D700DE3865 /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CB93126F837D700DE3865 /* ReportView.swift */; };
 		363CB93526F83B6900DE3865 /* ColorExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CB93426F83B6900DE3865 /* ColorExtention.swift */; };
 		363CB93726F8453A00DE3865 /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CB93626F8453A00DE3865 /* PickerView.swift */; };
 		3667438526F8AB80006557F2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3667438426F8AB80006557F2 /* HomeView.swift */; };
 		36730FDA2704199C0020F5EC /* HealthDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36730FD92704199C0020F5EC /* HealthDataModel.swift */; };
 		368730C22737EA1500FEB606 /* HomeViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368730C12737EA1500FEB606 /* HomeViewHeader.swift */; };
 		368730C42737EA3F00FEB606 /* HomeViewBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368730C32737EA3F00FEB606 /* HomeViewBody.swift */; };
+		36DD02C728DD5A5900D1387C /* TargetNumberOfSteps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36DD02C628DD5A5900D1387C /* TargetNumberOfSteps.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,13 +32,13 @@
 		363CB90C26F7560300DE3865 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		363CB90E26F7560300DE3865 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		363CB92F26F837B500DE3865 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
-		363CB93126F837D700DE3865 /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
 		363CB93426F83B6900DE3865 /* ColorExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtention.swift; sourceTree = "<group>"; };
 		363CB93626F8453A00DE3865 /* PickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerView.swift; sourceTree = "<group>"; };
 		3667438426F8AB80006557F2 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		36730FD92704199C0020F5EC /* HealthDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataModel.swift; sourceTree = "<group>"; };
 		368730C12737EA1500FEB606 /* HomeViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewHeader.swift; sourceTree = "<group>"; };
 		368730C32737EA3F00FEB606 /* HomeViewBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewBody.swift; sourceTree = "<group>"; };
+		36DD02C628DD5A5900D1387C /* TargetNumberOfSteps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetNumberOfSteps.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +85,7 @@
 				36730FD8270419850020F5EC /* Model */,
 				363CB93426F83B6900DE3865 /* ColorExtention.swift */,
 				363CB90526F7560100DE3865 /* walkingApp.swift */,
+				36DD02C628DD5A5900D1387C /* TargetNumberOfSteps.swift */,
 				363CB90926F7560300DE3865 /* Assets.xcassets */,
 				363CB90E26F7560300DE3865 /* Info.plist */,
 				362DE5AE26FB430A009B9294 /* walking.entitlements */,
@@ -108,7 +109,6 @@
 				3667438426F8AB80006557F2 /* HomeView.swift */,
 				368730C12737EA1500FEB606 /* HomeViewHeader.swift */,
 				368730C32737EA3F00FEB606 /* HomeViewBody.swift */,
-				363CB93126F837D700DE3865 /* ReportView.swift */,
 				363CB92F26F837B500DE3865 /* SettingView.swift */,
 				363CB93626F8453A00DE3865 /* PickerView.swift */,
 			);
@@ -226,7 +226,7 @@
 				363CB90826F7560100DE3865 /* ContentView.swift in Sources */,
 				363CB93726F8453A00DE3865 /* PickerView.swift in Sources */,
 				363CB93526F83B6900DE3865 /* ColorExtention.swift in Sources */,
-				363CB93226F837D700DE3865 /* ReportView.swift in Sources */,
+				36DD02C728DD5A5900D1387C /* TargetNumberOfSteps.swift in Sources */,
 				363CB90626F7560100DE3865 /* walkingApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

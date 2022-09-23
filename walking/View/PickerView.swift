@@ -9,18 +9,6 @@ import SwiftUI
 
 struct PickerView: View {
     
-    enum TargetNumberOfSteps: Int, CaseIterable {
-        case twoThousand = 2000
-        case threeThousand = 3000
-        case fourThousand = 4000
-        case fiveThousand = 5000
-        case sixThousand = 6000
-        case sevenThousand = 7000
-        case eightThousand = 8000
-        case nineThousand = 9000
-        case tenThousand = 10000
-    }
-    
     @AppStorage("steps_Value") private var targetNumOfSteps: TargetNumberOfSteps = .twoThousand
     
     var body: some View {

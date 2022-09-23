@@ -17,12 +17,12 @@ struct HomeViewBody: View {
         HealthDM.selectionDate = selectionDate
     }
     
-    @AppStorage("steps_Value") private var targetNumOfSteps = 2000
-    
+    @AppStorage("steps_Value") private var targetNumOfSteps: TargetNumberOfSteps = .twoThousand
+
     var body: some View {
         VStack(spacing: 50) {
-            if HealthDM.steps < targetNumOfSteps {
-                Text("目標歩数まで \(targetNumOfSteps - HealthDM.steps) 歩！")
+            if HealthDM.steps < targetNumOfSteps.rawValue {
+                Text("目標歩数まで \(targetNumOfSteps.rawValue - HealthDM.steps) 歩！")
                     .font(.title)
             } else {
                 Text("今日の目標達成！🎉🎉🎉")
@@ -34,18 +34,12 @@ struct HomeViewBody: View {
                     .opacity(0.2)
                 // 進捗用のCircle
                 Circle()
-                    .trim(from: 0.0, to: CGFloat(min(Double(HealthDM.steps) / Double(targetNumOfSteps), 1.0)))
+                    .trim(from: 0.0, to: CGFloat(min(Double(HealthDM.steps) / Double(targetNumOfSteps.rawValue), 1.0)))
                     .stroke(Color.keyColor, style: StrokeStyle(lineWidth: 20, lineCap: .round))
                     .animation(.linear(duration: 1))
                     .rotationEffect(.degrees(-90))
-                VStack {
-                    Text("現在   \(HealthDM.steps)")
-                    Divider()
-                        .frame(width: 170, height: 4)
-                        .background(Color.keyColor)
-                    Text("目標   \(targetNumOfSteps)")
-                }
-                .font(.title)
+                
+                textOfCircleContents
             }
             .frame(width: 300, height: 300)
         }
@@ -59,11 +53,24 @@ struct HomeViewBody: View {
             }
         }
     }
-    // 達成率を計算するメソッド
-    func achievementRate() -> String {
+    
+    private var textOfCircleContents: some View {
+        VStack {
+            Text("現在   \(HealthDM.steps)")
+            Divider()
+                .frame(width: 170, height: 4)
+                .background(Color.keyColor)
+            Text("目標   \(targetNumOfSteps.rawValue)")
+        }
+        .font(.title)
+    }
+        
+    /// 目標歩数の達成率を計算するメソッド
+    /// - Returns: String 戻り値
+    private func achievementRate() -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
-        return formatter.string(from: NSNumber(value: Double(HealthDM.steps) / Double(targetNumOfSteps)))!
+        return formatter.string(from: NSNumber(value: Double(HealthDM.steps) / Double(targetNumOfSteps.rawValue)))!
     }
 }
 

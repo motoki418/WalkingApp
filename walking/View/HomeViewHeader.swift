@@ -30,5 +30,4 @@ struct HomeViewHeader: View {
                 .font(.title2)
         }
     }
-    
 }
