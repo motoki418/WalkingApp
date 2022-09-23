@@ -9,15 +9,15 @@ import SwiftUI
 
 struct PickerView: View {
     
-    @AppStorage("steps_Value") private var targetNumOfSteps: TargetNumberOfSteps = .twoThousand
+    @AppStorage("steps_Value") private var targetNumberOfSteps: TargetNumberOfSteps = .twoThousand
     
     var body: some View {
-        Text("\(targetNumOfSteps.rawValue)歩")
+        Text("\(targetNumberOfSteps.rawValue)歩")
             .font(.system(size: 45))
         
-        Picker("", selection: $targetNumOfSteps) {
-            ForEach(TargetNumberOfSteps.allCases, id: \.self) { steps in
-                Text("\(steps.rawValue)")
+        Picker("", selection: $targetNumberOfSteps) {
+            ForEach(TargetNumberOfSteps.allCases, id: \.self) { targetNumOfStep in
+                Text("\(targetNumOfStep.rawValue)")
                     .font(.largeTitle)
             }
         }

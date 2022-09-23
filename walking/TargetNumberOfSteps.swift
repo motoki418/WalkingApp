@@ -17,4 +17,14 @@ enum TargetNumberOfSteps: Int, CaseIterable {
     case eightThousand = 8000
     case nineThousand = 9000
     case tenThousand = 10000
+    case elevenThousand = 11000
+    case twelveThousand = 12000
+    case thirteenThousand = 13000
+    case fourteenThousand = 14000
+    case fifteenThousand = 15000
+    case sixteenThousand = 16000
+    case seventeenThousand = 17000
+    case eighteenThousand = 18000
+    case nineteenThousand = 19000
+    case twentyThousand = 20000
 }

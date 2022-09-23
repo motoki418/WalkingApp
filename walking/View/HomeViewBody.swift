@@ -17,12 +17,12 @@ struct HomeViewBody: View {
         HealthDM.selectionDate = selectionDate
     }
     
-    @AppStorage("steps_Value") private var targetNumOfSteps: TargetNumberOfSteps = .twoThousand
+    @AppStorage("steps_Value") private var targetNumberOfSteps: TargetNumberOfSteps = .twoThousand
 
     var body: some View {
         VStack(spacing: 50) {
-            if HealthDM.steps < targetNumOfSteps.rawValue {
-                Text("目標歩数まで \(targetNumOfSteps.rawValue - HealthDM.steps) 歩！")
+            if HealthDM.steps < targetNumberOfSteps.rawValue {
+                Text("目標歩数まで \(targetNumberOfSteps.rawValue - HealthDM.steps) 歩！")
                     .font(.title)
             } else {
                 Text("今日の目標達成！🎉🎉🎉")
@@ -34,7 +34,7 @@ struct HomeViewBody: View {
                     .opacity(0.2)
                 // 進捗用のCircle
                 Circle()
-                    .trim(from: 0.0, to: CGFloat(min(Double(HealthDM.steps) / Double(targetNumOfSteps.rawValue), 1.0)))
+                    .trim(from: 0.0, to: CGFloat(min(Double(HealthDM.steps) / Double(targetNumberOfSteps.rawValue), 1.0)))
                     .stroke(Color.keyColor, style: StrokeStyle(lineWidth: 20, lineCap: .round))
                     .animation(.linear(duration: 1))
                     .rotationEffect(.degrees(-90))
@@ -60,7 +60,7 @@ struct HomeViewBody: View {
             Divider()
                 .frame(width: 170, height: 4)
                 .background(Color.keyColor)
-            Text("目標   \(targetNumOfSteps.rawValue)")
+            Text("目標   \(targetNumberOfSteps.rawValue)")
         }
         .font(.title)
     }
@@ -70,7 +70,7 @@ struct HomeViewBody: View {
     private func achievementRate() -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
-        return formatter.string(from: NSNumber(value: Double(HealthDM.steps) / Double(targetNumOfSteps.rawValue)))!
+        return formatter.string(from: NSNumber(value: Double(HealthDM.steps) / Double(targetNumberOfSteps.rawValue)))!
     }
 }
 
