@@ -5,10 +5,14 @@
 
 だれでも使えるようなシンプルなレイアウトで作りました。
 
-## 2.実行画面
+## 2. ダウンロードリンク
+[シンプル歩数計 - SimpleWalking](https://apps.apple.com/jp/app/simplewalking/id1590245946)
+
+
+## 3.実行画面
 https://user-images.githubusercontent.com/78193597/142972810-c5fb4fe8-500a-4177-82e7-eb56ea199285.mp4
 
-## 3.  アプリの機能
+## 4.  アプリの機能
 ### ホーム画面
 ホーム画面では、右にスワイプすると前日、左にスワイプすると翌日の日付に変更し、日付が変更されると画面に表示している円グラフの再描画が行われ、一日でどれだけ歩いたのかが分かりやすいようになっています。
 画面上部のDatePickerで日付を選択すると、選択した日付の歩数の表示が行われるようにしています。
@@ -22,9 +26,6 @@ https://user-images.githubusercontent.com/78193597/142972810-c5fb4fe8-500a-4177-
 | 設定画面 | 歩数設定画面 |
 | --- | --- |
 | !<img width="320" alt="Simulator Screen Shot - iPhone 13 Pro Max - 2021-11-28 at 12 31 38" src="https://user-images.githubusercontent.com/78193597/143728023-fc00ca95-5d29-454a-969b-5bf5ceec17bc.png"> | <img width="320" alt="Simulator Screen Shot - iPhone 13 Pro Max - 2021-11-28 at 12 31 34" src="https://user-images.githubusercontent.com/78193597/143728019-e6ae1e83-1eb5-421f-a229-8c5167c5c841.png"> |
- 
-## 4. ダウンロードリンク
-[シンプル歩数計 - SimpleWalking](https://apps.apple.com/jp/app/simplewalking/id1590245946)
 
 ## 5. アプリの設計について
 <img width="1278" alt="スクリーンショット 2022-06-22 10 44 45" src="https://user-images.githubusercontent.com/78193597/174925555-e967c332-d35e-4b7a-a004-fab9464f1ad5.png">
@@ -157,9 +158,9 @@ HealthDataModelでは歩数の取得を行うメソッドを作成していま�
 <img width="445" alt="スクリーンショット 2021-11-27 8 47 52" src="https://user-images.githubusercontent.com/78193597/143661479-034a794b-30a0-4008-a431-7963ca674aba.png">
 
 ## 7. 開発環境
-- Xcode13.4.1
-- macOS Monterey 12.4
-- iOS15.5
+- Xcode14.0
+- macOS Monterey 12.6
+- iOS16.0
 
 ## 8. 作成者
 https://twitter.com/motoki0418
